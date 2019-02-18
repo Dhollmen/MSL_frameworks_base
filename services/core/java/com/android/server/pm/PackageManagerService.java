@@ -1197,8 +1197,6 @@ public class PackageManagerService extends IPackageManager.Stub {
                                 params.serviceError();
                             }
                             mPendingInstalls.clear();
-                        } else {
-                            Slog.w(TAG, "Waiting to connect to media container service");
                         }
                     } else if (mPendingInstalls.size() > 0) {
                         HandlerParams params = mPendingInstalls.get(0);
@@ -1570,7 +1568,7 @@ public class PackageManagerService extends IPackageManager.Stub {
 
                     final PackageVerificationState state = mPendingVerification.get(verificationId);
                     if (state == null) {
-                        Slog.w(TAG, "Invalid verification token " + verificationId + " received");
+                        //Slog.w(TAG, "Invalid verification token " + verificationId + " received");
                         break;
                     }
 
@@ -1617,8 +1615,8 @@ public class PackageManagerService extends IPackageManager.Stub {
                     final IntentFilterVerificationState state = mIntentFilterVerificationStates.get(
                             verificationId);
                     if (state == null) {
-                        Slog.w(TAG, "Invalid IntentFilter verification token "
-                                + verificationId + " received");
+                        //Slog.w(TAG, "Invalid IntentFilter verification token "
+                        //        + verificationId + " received");
                         break;
                     }
 
@@ -1693,7 +1691,7 @@ public class PackageManagerService extends IPackageManager.Stub {
         @Override
         public void onVolumeForgotten(String fsUuid) {
             if (TextUtils.isEmpty(fsUuid)) {
-                Slog.w(TAG, "Forgetting internal storage is probably a mistake; ignoring");
+                //Slog.w(TAG, "Forgetting internal storage is probably a mistake; ignoring");
                 return;
             }
 
@@ -2342,9 +2340,9 @@ public class PackageManagerService extends IPackageManager.Stub {
 
             EventLog.writeEvent(EventLogTags.BOOT_PROGRESS_PMS_SCAN_END,
                     SystemClock.uptimeMillis());
-            Slog.i(TAG, "Time to scan packages: "
-                    + ((SystemClock.uptimeMillis()-startTime)/1000f)
-                    + " seconds");
+            //Slog.i(TAG, "Time to scan packages: "
+            //        + ((SystemClock.uptimeMillis()-startTime)/1000f)
+            //        + " seconds");
 
             // If the platform SDK has changed since the last time we booted,
             // we need to re-grant app permission to catch any new ones that
@@ -4488,8 +4486,8 @@ public class PackageManagerService extends IPackageManager.Stub {
                             // to the app was installed and in the new version this
                             // component no longer exists.  Clean it up by removing
                             // it from the preferred activities list, and skip it.
-                            Slog.w(TAG, "Removing dangling preferred activity: "
-                                    + pa.mPref.mComponent);
+                            //Slog.w(TAG, "Removing dangling preferred activity: "
+                            //        + pa.mPref.mComponent);
                             pir.removeFilter(pa);
                             changed = true;
                             continue;
@@ -4922,9 +4920,9 @@ public class PackageManagerService extends IPackageManager.Stub {
                             && defaultBrowserMatch.priority >= maxMatchPrio
                             && !TextUtils.isEmpty(defaultBrowserPackageName))
                     {
-                        if (debug) {
-                            Slog.v(TAG, "Default browser match " + defaultBrowserMatch);
-                        }
+                        //if (debug) {
+                        //    Slog.v(TAG, "Default browser match " + defaultBrowserMatch);
+                        //}
                         result.add(defaultBrowserMatch);
                     } else {
                         result.addAll(matchAllList);
@@ -5795,10 +5793,10 @@ public class PackageManagerService extends IPackageManager.Stub {
                 return;
             }
 
-            Slog.w(TAG, "PackageSetting for " + ps.name
-                    + " is missing signatures.  Collecting certs again to recover them.");
-        } else {
-            Log.i(TAG, srcFile.toString() + " changed; collecting certs");
+            //Slog.w(TAG, "PackageSetting for " + ps.name
+            //        + " is missing signatures.  Collecting certs again to recover them.");
+            //} else {
+            // Log.i(TAG, srcFile.toString() + " changed; collecting certs");
         }
 
         try {
@@ -7480,9 +7478,9 @@ public class PackageManagerService extends IPackageManager.Stub {
                 if (pkg.applicationInfo.targetSdkVersion > Build.VERSION_CODES.LOLLIPOP_MR1) {
                     p.group = mPermissionGroups.get(p.info.group);
                     // Warn for a permission in an unknown group.
-                    if (p.info.group != null && p.group == null) {
-                        Slog.w(TAG, "Permission " + p.info.name + " from package "
-                                + p.info.packageName + " in an unknown group " + p.info.group);
+                    //if (p.info.group != null && p.group == null) {
+                    //    Slog.w(TAG, "Permission " + p.info.name + " from package "
+                    //            + p.info.packageName + " in an unknown group " + p.info.group);
                     }
                 }
 
@@ -7846,7 +7844,7 @@ public class PackageManagerService extends IPackageManager.Stub {
                     ps.primaryCpuAbiString = adjustedAbi;
                     if (ps.pkg != null && ps.pkg.applicationInfo != null) {
                         ps.pkg.applicationInfo.primaryCpuAbi = adjustedAbi;
-                        Slog.i(TAG, "Adjusting ABI for : " + ps.name + " to " + adjustedAbi);
+                        //Slog.i(TAG, "Adjusting ABI for : " + ps.name + " to " + adjustedAbi);
 
                         int result = mPackageDexOptimizer.performDexOpt(ps.pkg,
                                 null /* instruction sets */, forceDexOpt, deferDexOpt, true,
@@ -8481,10 +8479,10 @@ public class PackageManagerService extends IPackageManager.Stub {
             }
 
             if (bp == null || bp.packageSetting == null) {
-                if (packageOfInterest == null || packageOfInterest.equals(pkg.packageName)) {
-                    Slog.w(TAG, "Unknown permission " + name
-                            + " in package " + pkg.packageName);
-                }
+                //if (packageOfInterest == null || packageOfInterest.equals(pkg.packageName)) {
+                //    Slog.w(TAG, "Unknown permission " + name
+                //            + " in package " + pkg.packageName);
+                //}
                 continue;
             }
 
@@ -8639,12 +8637,12 @@ public class PackageManagerService extends IPackageManager.Stub {
                     } break;
 
                     default: {
-                        if (packageOfInterest == null
-                                || packageOfInterest.equals(pkg.packageName)) {
-                            Slog.w(TAG, "Not granting permission " + perm
-                                    + " to package " + pkg.packageName
-                                    + " because it was previously installed without");
-                        }
+                        //if (packageOfInterest == null
+                        //        || packageOfInterest.equals(pkg.packageName)) {
+                        //    Slog.w(TAG, "Not granting permission " + perm
+                        //            + " to package " + pkg.packageName
+                        //            + " because it was previously installed without");
+                        //}
                     } break;
                 }
             } else {
@@ -8654,21 +8652,21 @@ public class PackageManagerService extends IPackageManager.Stub {
                     permissionsState.updatePermissionFlags(bp, UserHandle.USER_ALL,
                             PackageManager.MASK_PERMISSION_FLAGS, 0);
                     changedInstallPermission = true;
-                    Slog.i(TAG, "Un-granting permission " + perm
-                            + " from package " + pkg.packageName
-                            + " (protectionLevel=" + bp.protectionLevel
-                            + " flags=0x" + Integer.toHexString(pkg.applicationInfo.flags)
-                            + ")");
-                } else if ((bp.protectionLevel&PermissionInfo.PROTECTION_FLAG_APPOP) == 0) {
+                    //Slog.i(TAG, "Un-granting permission " + perm
+                    //        + " from package " + pkg.packageName
+                    //        + " (protectionLevel=" + bp.protectionLevel
+                    //        + " flags=0x" + Integer.toHexString(pkg.applicationInfo.flags)
+                    //        + ")");
+                //} else if ((bp.protectionLevel&PermissionInfo.PROTECTION_FLAG_APPOP) == 0) {
                     // Don't print warning for app op permissions, since it is fine for them
                     // not to be granted, there is a UI for the user to decide.
-                    if (packageOfInterest == null || packageOfInterest.equals(pkg.packageName)) {
-                        Slog.w(TAG, "Not granting permission " + perm
-                                + " to package " + pkg.packageName
-                                + " (protectionLevel=" + bp.protectionLevel
-                                + " flags=0x" + Integer.toHexString(pkg.applicationInfo.flags)
-                                + ")");
-                    }
+                    //if (packageOfInterest == null || packageOfInterest.equals(pkg.packageName)) {
+                        //Slog.w(TAG, "Not granting permission " + perm
+                        //        + " to package " + pkg.packageName
+                        //        + " (protectionLevel=" + bp.protectionLevel
+                        //        + " flags=0x" + Integer.toHexString(pkg.applicationInfo.flags)
+                        //        + ")");
+                    //}
                 }
             }
         }
@@ -8698,8 +8696,8 @@ public class PackageManagerService extends IPackageManager.Stub {
             if (npi.name.equals(perm)
                     && pkg.applicationInfo.targetSdkVersion < npi.sdkVersion) {
                 allowed = true;
-                Log.i(TAG, "Auto-granting " + perm + " to old pkg "
-                        + pkg.packageName);
+                //Log.i(TAG, "Auto-granting " + perm + " to old pkg "
+                //        + pkg.packageName);
                 break;
             }
         }
@@ -8951,10 +8949,10 @@ public class PackageManagerService extends IPackageManager.Stub {
             final boolean systemApp = applicationInfo.isSystemApp();
             if (!systemApp) {
                 // non-system applications can never define a priority >0
-                Slog.w(TAG, "Non-system app; cap priority to 0;"
-                        + " package: " + applicationInfo.packageName
-                        + " activity: " + intent.activity.className
-                        + " origPrio: " + intent.getPriority());
+                //Slog.w(TAG, "Non-system app; cap priority to 0;"
+                //        + " package: " + applicationInfo.packageName
+                //        + " activity: " + intent.activity.className
+                //        + " origPrio: " + intent.getPriority());
                 intent.setPriority(0);
                 return;
             }
@@ -9104,7 +9102,7 @@ public class PackageManagerService extends IPackageManager.Stub {
                     intent.dump(new LogPrinter(Log.VERBOSE, TAG), "      ");
                 }
                 if (!intent.debugCheck()) {
-                    Log.w(TAG, "==> For Activity " + a.info.name);
+                    //Log.w(TAG, "==> For Activity " + a.info.name);
                 }
                 addFilter(intent);
             }
@@ -9315,7 +9313,7 @@ public class PackageManagerService extends IPackageManager.Stub {
                     intent.dump(new LogPrinter(Log.VERBOSE, TAG), "      ");
                 }
                 if (!intent.debugCheck()) {
-                    Log.w(TAG, "==> For Service " + s.info.name);
+                    //Log.w(TAG, "==> For Service " + s.info.name);
                 }
                 addFilter(intent);
             }
@@ -9516,7 +9514,7 @@ public class PackageManagerService extends IPackageManager.Stub {
 
         public final void addProvider(PackageParser.Provider p) {
             if (mProviders.containsKey(p.getComponentName())) {
-                Slog.w(TAG, "Provider " + p.getComponentName() + " already defined; ignoring");
+                //Slog.w(TAG, "Provider " + p.getComponentName() + " already defined; ignoring");
                 return;
             }
 
@@ -9536,7 +9534,7 @@ public class PackageManagerService extends IPackageManager.Stub {
                     intent.dump(new LogPrinter(Log.VERBOSE, TAG), "      ");
                 }
                 if (!intent.debugCheck()) {
-                    Log.w(TAG, "==> For Provider " + p.info.name);
+                    //Log.w(TAG, "==> For Provider " + p.info.name);
                 }
                 addFilter(intent);
             }
@@ -16957,7 +16955,7 @@ public class PackageManagerService extends IPackageManager.Stub {
         }
 
         private void notifyCreated(int moveId, Bundle extras) {
-            Slog.v(TAG, "Move " + moveId + " created " + extras.toString());
+            //Slog.v(TAG, "Move " + moveId + " created " + extras.toString());
 
             final SomeArgs args = SomeArgs.obtain();
             args.argi1 = moveId;
@@ -16970,7 +16968,7 @@ public class PackageManagerService extends IPackageManager.Stub {
         }
 
         private void notifyStatusChanged(int moveId, int status, long estMillis) {
-            Slog.v(TAG, "Move " + moveId + " status " + status);
+            //Slog.v(TAG, "Move " + moveId + " status " + status);
 
             final SomeArgs args = SomeArgs.obtain();
             args.argi1 = moveId;

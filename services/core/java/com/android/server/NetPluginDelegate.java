@@ -60,7 +60,7 @@ public class NetPluginDelegate {
                     devStats, xtStats);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.w(TAG, "error in invoke method");
+            // Log.w(TAG, "error in invoke method");
         }
         if (LOGV) Slog.v(TAG, "getTetherStats() X");
     }
@@ -74,7 +74,7 @@ public class NetPluginDelegate {
             tetherExtensionClass.getMethod("setQuota", String.class, long.class).invoke(
                     tetherExtensionObj, iface, quota);
         } catch (Exception ex) {
-            Log.w(TAG, "Error calling setQuota Method on extension jar");
+            //Log.w(TAG, "Error calling setQuota Method on extension jar");
         }
         if (LOGV) Slog.v(TAG, "setQuota(" + iface + ", " + quota + ") X");
     }
@@ -86,7 +86,7 @@ public class NetPluginDelegate {
             tetherExtensionClass.getMethod("setUpstream", Network.class).invoke(
                     tetherExtensionObj, net);
         } catch (Exception ex) {
-            Log.w(TAG, "Error calling setUpstream Method on extension jar");
+            //Log.w(TAG, "Error calling setUpstream Method on extension jar");
         }
         if (LOGV) Slog.v(TAG, "setUpstream(" + net + ") E");
     }
@@ -108,7 +108,7 @@ public class NetPluginDelegate {
                     Slog.v(TAG, "ConnectivityExt jar loaded");
                 extensionFailed = false;
             } catch (Exception e) {
-                Log.w(TAG, "Connectivity extension is not available");
+                //Log.w(TAG, "Connectivity extension is not available");
                 extensionFailed = true;
             }
         }
