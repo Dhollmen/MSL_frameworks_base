@@ -1464,7 +1464,7 @@ public final class ActivityManagerService extends ActivityManagerNative
                         isBackground &= (proc.userId != userId);
                     }
                     if (isBackground && !showBackground) {
-                        Slog.w(TAG, "Skipping crash dialog of " + proc + ": background");
+                        //Slog.w(TAG, "Skipping crash dialog of " + proc + ": background");
                         if (res != null) {
                             res.set(0);
                         }
@@ -1491,7 +1491,7 @@ public final class ActivityManagerService extends ActivityManagerNative
                     HashMap<String, Object> data = (HashMap<String, Object>) msg.obj;
                     ProcessRecord proc = (ProcessRecord)data.get("app");
                     if (proc != null && proc.anrDialog != null) {
-                        Slog.e(TAG, "App already has anr dialog: " + proc);
+                        //Slog.e(TAG, "App already has anr dialog: " + proc);
                         return;
                     }
 
@@ -2328,9 +2328,9 @@ public final class ActivityManagerService extends ActivityManagerNative
         protected void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
             if (mActivityManagerService.checkCallingPermission(android.Manifest.permission.DUMP)
                     != PackageManager.PERMISSION_GRANTED) {
-                pw.println("Permission Denial: can't dump meminfo from from pid="
-                        + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid()
-                        + " without permission " + android.Manifest.permission.DUMP);
+                //pw.println("Permission Denial: can't dump meminfo from from pid="
+                //        + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid()
+                //        + " without permission " + android.Manifest.permission.DUMP);
                 return;
             }
 
@@ -2348,9 +2348,9 @@ public final class ActivityManagerService extends ActivityManagerNative
         protected void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
             if (mActivityManagerService.checkCallingPermission(android.Manifest.permission.DUMP)
                     != PackageManager.PERMISSION_GRANTED) {
-                pw.println("Permission Denial: can't dump gfxinfo from from pid="
-                        + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid()
-                        + " without permission " + android.Manifest.permission.DUMP);
+                //pw.println("Permission Denial: can't dump gfxinfo from from pid="
+                //        + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid()
+                //        + " without permission " + android.Manifest.permission.DUMP);
                 return;
             }
 
@@ -2368,9 +2368,9 @@ public final class ActivityManagerService extends ActivityManagerNative
         protected void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
             if (mActivityManagerService.checkCallingPermission(android.Manifest.permission.DUMP)
                     != PackageManager.PERMISSION_GRANTED) {
-                pw.println("Permission Denial: can't dump dbinfo from from pid="
-                        + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid()
-                        + " without permission " + android.Manifest.permission.DUMP);
+                //pw.println("Permission Denial: can't dump dbinfo from from pid="
+                //        + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid()
+                //        + " without permission " + android.Manifest.permission.DUMP);
                 return;
             }
 
@@ -2388,9 +2388,9 @@ public final class ActivityManagerService extends ActivityManagerNative
         protected void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
             if (mActivityManagerService.checkCallingPermission(android.Manifest.permission.DUMP)
                     != PackageManager.PERMISSION_GRANTED) {
-                pw.println("Permission Denial: can't dump cpuinfo from from pid="
-                        + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid()
-                        + " without permission " + android.Manifest.permission.DUMP);
+                //pw.println("Permission Denial: can't dump cpuinfo from from pid="
+                //        + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid()
+                //        + " without permission " + android.Manifest.permission.DUMP);
                 return;
             }
 
@@ -2427,7 +2427,7 @@ public final class ActivityManagerService extends ActivityManagerNative
         mFactoryTest = FactoryTest.getMode();
         mSystemThread = ActivityThread.currentActivityThread();
 
-        Slog.i(TAG, "Memory class: " + ActivityManager.staticGetMemoryClass());
+        //Slog.i(TAG, "Memory class: " + ActivityManager.staticGetMemoryClass());
 
         mHandlerThread = new ServiceThread(TAG,
                 android.os.Process.THREAD_PRIORITY_FOREGROUND, false /*allowIo*/);
@@ -2905,9 +2905,9 @@ public final class ActivityManagerService extends ActivityManagerNative
     }
 
     private static void killProcessGroup(int uid, int pid) {
-        Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, "killProcessGroup");
+        // Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, "killProcessGroup");
         Process.killProcessGroup(uid, pid);
-        Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+        // Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
     }
 
     final void removeLruProcessLocked(ProcessRecord app) {
@@ -3473,15 +3473,15 @@ public final class ActivityManagerService extends ActivityManagerNative
             // the PID of the new process, or else throw a RuntimeException.
             boolean isActivityProcess = (entryPoint == null);
             if (entryPoint == null) entryPoint = "android.app.ActivityThread";
-            Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, "Start proc: " +
-                    app.processName);
+            //Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, "Start proc: " +
+            //        app.processName);
             checkTime(startTime, "startProcess: asking zygote to start proc");
             Process.ProcessStartResult startResult = Process.start(entryPoint,
                     app.processName, uid, uid, gids, debugFlags, mountExternal,
                     app.info.targetSdkVersion, app.info.seinfo, requiredAbi, instructionSet,
                     app.info.dataDir, entryPointArgs);
             checkTime(startTime, "startProcess: returned from zygote!");
-            Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+            //Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
 
             if (app.isolated) {
                 mBatteryStatsService.addIsolatedUid(app.uid, app.info.uid);
@@ -4549,15 +4549,15 @@ public final class ActivityManagerService extends ActivityManagerNative
             }
 
             if (proc == null) {
-                Slog.w(TAG, "crashApplication: nothing for uid=" + uid
-                        + " initialPid=" + initialPid
-                        + " packageName=" + packageName);
+                //Slog.w(TAG, "crashApplication: nothing for uid=" + uid
+                //        + " initialPid=" + initialPid
+                //        + " packageName=" + packageName);
                 return;
             }
 
             if (proc.thread != null) {
                 if (proc.pid == Process.myPid()) {
-                    Log.w(TAG, "crashApplication: trying to crash self!");
+                    //Log.w(TAG, "crashApplication: trying to crash self!");
                     return;
                 }
                 long ident = Binder.clearCallingIdentity();
@@ -4897,7 +4897,8 @@ public final class ActivityManagerService extends ActivityManagerNative
      */
     public static File dumpStackTraces(boolean clearTraces, ArrayList<Integer> firstPids,
             ProcessCpuTracker processCpuTracker, SparseArray<Boolean> lastPids, String[] nativeProcs) {
-        String tracesPath = SystemProperties.get("dalvik.vm.stack-trace-file", null);
+        //String tracesPath = SystemProperties.get("dalvik.vm.stack-trace-file", null);
+        String tracesPath = null;
         if (tracesPath == null || tracesPath.length() == 0) {
             return null;
         }
@@ -5002,8 +5003,11 @@ public final class ActivityManagerService extends ActivityManagerNative
     final void logAppTooSlow(ProcessRecord app, long startTime, String msg) {
         if (true || IS_USER_BUILD) {
             return;
+        } else {
+            return;
         }
-        String tracesPath = SystemProperties.get("dalvik.vm.stack-trace-file", null);
+        //String tracesPath = SystemProperties.get("dalvik.vm.stack-trace-file", null);
+        String tracesPath = null;
         if (tracesPath == null || tracesPath.length() == 0) {
             return;
         }
@@ -5050,7 +5054,7 @@ public final class ActivityManagerService extends ActivityManagerNative
             if (app != null) {
                 ArrayList<Integer> firstPids = new ArrayList<Integer>();
                 firstPids.add(app.pid);
-                dumpStackTraces(tracesPath, firstPids, null, null, null);
+                // dumpStackTraces(tracesPath, firstPids, null, null, null);
             }
 
             File lastTracesFile = null;
@@ -5228,7 +5232,8 @@ public final class ActivityManagerService extends ActivityManagerNative
                     info.toString());
 
             //Set the trace file name to app name + current date format to avoid overrinding trace file
-            String tracesPath = SystemProperties.get("dalvik.vm.stack-trace-file", null);
+            //String tracesPath = SystemProperties.get("dalvik.vm.stack-trace-file", null);
+            String tracesPath = null;
             if (tracesPath != null && tracesPath.length() != 0) {
                 File traceRenameFile = new File(tracesPath);
                 String newTracesPath;
@@ -12248,8 +12253,8 @@ public final class ActivityManagerService extends ActivityManagerNative
         }
         if (crashTime != null && now < crashTime+ProcessList.MIN_CRASH_INTERVAL) {
             // This process loses!
-            Slog.w(TAG, "Process " + app.info.processName
-                    + " has crashed too many times: killing!");
+            //Slog.w(TAG, "Process " + app.info.processName
+            //        + " has crashed too many times: killing!");
             EventLog.writeEvent(EventLogTags.AM_PROCESS_CRASHED_TOO_MUCH,
                     app.userId, app.info.processName, app.uid);
             mStackSupervisor.handleAppCrashLocked(app);
@@ -12299,7 +12304,7 @@ public final class ActivityManagerService extends ActivityManagerNative
             for (int activityNdx = activities.size() - 1; activityNdx >= 0; --activityNdx) {
                 final ActivityRecord r = activities.get(activityNdx);
                 if (r.isHomeActivity()) {
-                    Log.i(TAG, "Clearing package preferred activities from " + r.packageName);
+                    //Log.i(TAG, "Clearing package preferred activities from " + r.packageName);
                     try {
                         ActivityThread.getPackageManager()
                                 .clearPackagePreferredActivities(r.packageName);
@@ -12443,8 +12448,9 @@ public final class ActivityManagerService extends ActivityManagerNative
                                        ApplicationInfo.FLAG_UPDATED_SYSTEM_APP)) != 0;
         final String processName = process == null ? "unknown" : process.processName;
         final String dropboxTag = isSystemApp ? "system_app_strictmode" : "data_app_strictmode";
-        final DropBoxManager dbox = (DropBoxManager)
-                mContext.getSystemService(Context.DROPBOX_SERVICE);
+        //final DropBoxManager dbox = (DropBoxManager)
+        //        mContext.getSystemService(Context.DROPBOX_SERVICE);
+        final DropBoxManager dbox = null;
 
         // Exit early if the dropbox isn't configured to accept this report type.
         if (dbox == null || !dbox.isTagEnabled(dropboxTag)) return;
@@ -12819,11 +12825,11 @@ public final class ActivityManagerService extends ActivityManagerNative
                             shortMsg, longMsg, timeMillis, crashInfo.stackTrace)) {
                         if ("1".equals(SystemProperties.get(SYSTEM_DEBUGGABLE, "0"))
                                 && "Native crash".equals(crashInfo.exceptionClassName)) {
-                            Slog.w(TAG, "Skip killing native crashed app " + name
-                                    + "(" + pid + ") during testing");
+                            //Slog.w(TAG, "Skip killing native crashed app " + name
+                            //        + "(" + pid + ") during testing");
                         } else {
-                            Slog.w(TAG, "Force-killing crashed app " + name
-                                    + " at watcher's request");
+                            //Slog.w(TAG, "Force-killing crashed app " + name
+                            //        + " at watcher's request");
                             if (r != null) {
                                 r.kill("crash", true);
                             } else {
@@ -13121,10 +13127,10 @@ public final class ActivityManagerService extends ActivityManagerNative
     protected void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
         if (checkCallingPermission(android.Manifest.permission.DUMP)
                 != PackageManager.PERMISSION_GRANTED) {
-            pw.println("Permission Denial: can't dump ActivityManager from from pid="
-                    + Binder.getCallingPid()
-                    + ", uid=" + Binder.getCallingUid()
-                    + " without permission "
+            //pw.println("Permission Denial: can't dump ActivityManager from from pid="
+            //        + Binder.getCallingPid()
+            //        + ", uid=" + Binder.getCallingUid()
+            //        + " without permission "
                     + android.Manifest.permission.DUMP);
             return;
         }
