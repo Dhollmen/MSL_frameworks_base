@@ -42,7 +42,7 @@ import java.util.TimeZone;
  */
 public class ScheduleConditionProvider extends SystemConditionProviderService {
     private static final String TAG = "ConditionProviders.SCP";
-    private static final boolean DEBUG = Log.isLoggable("ConditionProviders", Log.DEBUG);
+    private static final boolean DEBUG = false;
 
     public static final ComponentName COMPONENT =
             new ComponentName("android", ScheduleConditionProvider.class.getName());
