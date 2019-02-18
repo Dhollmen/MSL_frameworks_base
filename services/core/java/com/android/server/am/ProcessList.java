@@ -259,11 +259,6 @@ final class ProcessList {
         int minSize = 480*800;  //  384000
         int maxSize = 1280*800; // 1024000  230400 870400  .264
         float scaleDisp = ((float)(displayWidth*displayHeight)-minSize)/(maxSize-minSize);
-        if (false) {
-            Slog.i("XXXXXX", "scaleMem=" + scaleMem);
-            Slog.i("XXXXXX", "scaleDisp=" + scaleDisp + " dw=" + displayWidth
-                    + " dh=" + displayHeight);
-        }
 
         float scale = scaleMem > scaleDisp ? scaleMem : scaleDisp;
         if (scale < 0) scale = 0;
@@ -272,10 +267,6 @@ final class ProcessList {
                 com.android.internal.R.integer.config_lowMemoryKillerMinFreeKbytesAdjust);
         int minfree_abs = Resources.getSystem().getInteger(
                 com.android.internal.R.integer.config_lowMemoryKillerMinFreeKbytesAbsolute);
-        if (false) {
-            Slog.i("XXXXXX", "minfree_adj=" + minfree_adj + " minfree_abs=" + minfree_abs);
-        }
-
         // We've now baked in the increase to the basic oom values above, since
         // they seem to be useful more generally for devices that are tight on
         // memory than just for 64 bit.  This should probably have some more
@@ -286,12 +277,10 @@ final class ProcessList {
             int low = mOomMinFreeLow[i];
             int high = mOomMinFreeHigh[i];
             if (is64bit) {
-                Slog.i("XXXXXX", "choosing minFree values for 64 Bit");
                 // Increase the high min-free levels for cached processes for 64-bit
                 if (i == 4) high = (high*3)/2;
                 else if (i == 5) high = (high*7)/4;
             } else {
-                Slog.i("XXXXXX", "choosing minFree values for 32 Bit");
                 low = mOomMinFreeLow32Bit[i];
                 high = mOomMinFreeHigh32Bit[i];
             }
@@ -765,17 +754,11 @@ final class ProcessList {
         if (android.os.Process.readProcFile(stat, PROCESS_STATS_FORMAT,
                 procStats, null, null)) {
             if ("Z".equals(procStats[0])) {
-                if (noisy) {
-                    Slog.i(TAG, pid + " is zombie state");
-                }
                 return false;
             }
             try {
                 int pendingSignals = Integer.parseInt(procStats[1]);
                 if ((pendingSignals & (1 << 8)) != 0) {
-                    if (noisy) {
-                        Slog.i(TAG, pid + " has pending signal 9");
-                    }
                     return false;
                 }
             } catch (NumberFormatException e) {
@@ -789,9 +772,6 @@ final class ProcessList {
                 exists = e.errno != android.system.OsConstants.ENOENT;
             }
             if (!exists) {
-                if (noisy) {
-                    Slog.i(TAG, stat + " does not exist");
-                }
                 return false;
             }
         }

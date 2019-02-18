@@ -76,7 +76,7 @@ final class ActivityRecord {
     private static final String TAG_SWITCH = TAG + POSTFIX_SWITCH;
     private static final String TAG_THUMBNAILS = TAG + POSTFIX_THUMBNAILS;
 
-    private static final boolean SHOW_ACTIVITY_START_TIME = true;
+    private static final boolean SHOW_ACTIVITY_START_TIME = false;
     final public static String RECENTS_PACKAGE_NAME = "com.android.systemui.recents";
 
     private static final String ATTR_ID = "id";
@@ -423,7 +423,6 @@ final class ActivityRecord {
         try {
             return Token.tokenToActivityRecordLocked((Token)token);
         } catch (ClassCastException e) {
-            Slog.w(TAG, "Bad activity token: " + token, e);
             return null;
         }
     }
@@ -829,7 +828,6 @@ final class ActivityRecord {
                     }
                     break;
                 default:
-                    Slog.e(TAG, "applyOptionsLocked: Unknown animationType=" + animationType);
                     break;
             }
             pendingOptions = null;

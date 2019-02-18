@@ -75,7 +75,6 @@ class RecentTasks extends ArrayList<TaskRecord> {
     /** Remove recent tasks for a user. */
     void removeTasksForUserLocked(int userId) {
         if(userId <= 0) {
-            Slog.i(TAG, "Can't remove recent task on user " + userId);
             return;
         }
 
@@ -122,7 +121,6 @@ class RecentTasks extends ArrayList<TaskRecord> {
                     // This situation is broken, and we should just get rid of it now.
                     remove(i);
                     task.removedFromRecents();
-                    Slog.w(TAG, "Removing auto-remove without activity: " + task);
                     continue;
                 }
                 // Check whether this activity is currently available.
@@ -165,7 +163,6 @@ class RecentTasks extends ArrayList<TaskRecord> {
                             // Doesn't exist any more!  Good-bye.
                             remove(i);
                             task.removedFromRecents();
-                            Slog.w(TAG, "Removing no longer valid recent: " + task);
                             continue;
                         } else {
                             // Otherwise just not available for now.
@@ -222,8 +219,6 @@ class RecentTasks extends ArrayList<TaskRecord> {
             if (cur == top) {
                 // Verify start of the chain.
                 if (cur.mNextAffiliate != null || cur.mNextAffiliateTaskId != INVALID_TASK_ID) {
-                    Slog.wtf(TAG, "Bad chain @" + endIndex
-                            + ": first task has next affiliate: " + prev);
                     sane = false;
                     break;
                 }
@@ -231,11 +226,6 @@ class RecentTasks extends ArrayList<TaskRecord> {
                 // Verify middle of the chain's next points back to the one before.
                 if (cur.mNextAffiliate != prev
                         || cur.mNextAffiliateTaskId != prev.taskId) {
-                    Slog.wtf(TAG, "Bad chain @" + endIndex
-                            + ": middle task " + cur + " @" + endIndex
-                            + " has bad next affiliate "
-                            + cur.mNextAffiliate + " id " + cur.mNextAffiliateTaskId
-                            + ", expected " + prev);
                     sane = false;
                     break;
                 }
@@ -243,9 +233,6 @@ class RecentTasks extends ArrayList<TaskRecord> {
             if (cur.mPrevAffiliateTaskId == INVALID_TASK_ID) {
                 // Chain ends here.
                 if (cur.mPrevAffiliate != null) {
-                    Slog.wtf(TAG, "Bad chain @" + endIndex
-                            + ": last task " + cur + " has previous affiliate "
-                            + cur.mPrevAffiliate);
                     sane = false;
                 }
                 if (DEBUG_RECENTS) Slog.d(TAG_RECENTS, "addRecent: end of chain @" + endIndex);
@@ -253,35 +240,23 @@ class RecentTasks extends ArrayList<TaskRecord> {
             } else {
                 // Verify middle of the chain's prev points to a valid item.
                 if (cur.mPrevAffiliate == null) {
-                    Slog.wtf(TAG, "Bad chain @" + endIndex
-                            + ": task " + cur + " has previous affiliate "
-                            + cur.mPrevAffiliate + " but should be id "
-                            + cur.mPrevAffiliate);
                     sane = false;
                     break;
                 }
             }
             if (cur.mAffiliatedTaskId != task.mAffiliatedTaskId) {
-                Slog.wtf(TAG, "Bad chain @" + endIndex
-                        + ": task " + cur + " has affiliated id "
-                        + cur.mAffiliatedTaskId + " but should be "
-                        + task.mAffiliatedTaskId);
                 sane = false;
                 break;
             }
             prev = cur;
             endIndex++;
             if (endIndex >= recentsCount) {
-                Slog.wtf(TAG, "Bad chain ran off index " + endIndex
-                        + ": last task " + prev);
                 sane = false;
                 break;
             }
         }
         if (sane) {
             if (endIndex < taskIndex) {
-                Slog.wtf(TAG, "Bad chain @" + endIndex
-                        + ": did not extend to task " + task + " @" + taskIndex);
                 sane = false;
             }
         }
@@ -356,7 +331,6 @@ class RecentTasks extends ArrayList<TaskRecord> {
                     needAffiliationFix = true;
                 }
             } else {
-                Slog.wtf(TAG, "Task with inRecent not in recents: " + task);
                 needAffiliationFix = true;
             }
         }
@@ -546,7 +520,6 @@ class RecentTasks extends ArrayList<TaskRecord> {
         final TaskRecord first = mTmpRecents.get(0);
         first.inRecents = true;
         if (first.mNextAffiliate != null) {
-            Slog.w(TAG, "Link error 1 first.next=" + first.mNextAffiliate);
             first.setNextAffiliate(null);
             mService.notifyTaskPersisterLocked(first, false);
         }
@@ -556,14 +529,10 @@ class RecentTasks extends ArrayList<TaskRecord> {
             final TaskRecord next = mTmpRecents.get(i);
             final TaskRecord prev = mTmpRecents.get(i + 1);
             if (next.mPrevAffiliate != prev) {
-                Slog.w(TAG, "Link error 2 next=" + next + " prev=" + next.mPrevAffiliate +
-                        " setting prev=" + prev);
                 next.setPrevAffiliate(prev);
                 mService.notifyTaskPersisterLocked(next, false);
             }
             if (prev.mNextAffiliate != next) {
-                Slog.w(TAG, "Link error 3 prev=" + prev + " next=" + prev.mNextAffiliate +
-                        " setting next=" + next);
                 prev.setNextAffiliate(next);
                 mService.notifyTaskPersisterLocked(prev, false);
             }
@@ -572,7 +541,6 @@ class RecentTasks extends ArrayList<TaskRecord> {
         // The last one is the beginning of the list and has no prev.
         final TaskRecord last = mTmpRecents.get(tmpSize - 1);
         if (last.mPrevAffiliate != null) {
-            Slog.w(TAG, "Link error 4 last.prev=" + last.mPrevAffiliate);
             last.setPrevAffiliate(null);
             mService.notifyTaskPersisterLocked(last, false);
         }

@@ -190,8 +190,6 @@ public final class BatteryStatsService extends IBatteryStats.Stub
     }
 
     public void shutdown() {
-        Slog.w("BatteryStats", "Writing battery stats before shutdown...");
-
         updateExternalStats("shutdown", UPDATE_ALL);
         synchronized (mStats) {
             mStats.shutdownLocked();
@@ -289,8 +287,6 @@ public final class BatteryStatsService extends IBatteryStats.Stub
     public byte[] getStatistics() {
         mContext.enforceCallingPermission(
                 android.Manifest.permission.BATTERY_STATS, null);
-        //Slog.i("foo", "SENDING BATTERY INFO:");
-        //mStats.dumpLocked(new LogPrinter(Log.INFO, "foo", Log.LOG_ID_SYSTEM));
         Parcel out = Parcel.obtain();
         updateExternalStats("get-stats", UPDATE_ALL);
         synchronized (mStats) {
@@ -304,8 +300,6 @@ public final class BatteryStatsService extends IBatteryStats.Stub
     public ParcelFileDescriptor getStatisticsStream() {
         mContext.enforceCallingPermission(
                 android.Manifest.permission.BATTERY_STATS, null);
-        //Slog.i("foo", "SENDING BATTERY INFO:");
-        //mStats.dumpLocked(new LogPrinter(Log.INFO, "foo", Log.LOG_ID_SYSTEM));
         Parcel out = Parcel.obtain();
         updateExternalStats("get-stats", UPDATE_ALL);
         synchronized (mStats) {
@@ -316,7 +310,6 @@ public final class BatteryStatsService extends IBatteryStats.Stub
         try {
             return ParcelFileDescriptor.fromData(data, "battery-stats");
         } catch (IOException e) {
-            Slog.w(TAG, "Unable to create shared memory", e);
             return null;
         }
     }
@@ -1172,8 +1165,6 @@ public final class BatteryStatsService extends IBatteryStats.Stub
                                 return;
                             }
                         } catch (IOException | ParcelFormatException e) {
-                            Slog.w(TAG, "Failure reading checkin file "
-                                    + mStats.mCheckinFile.getBaseFile(), e);
                         }
                     }
                 }
@@ -1260,35 +1251,6 @@ public final class BatteryStatsService extends IBatteryStats.Stub
                     result.mControllerIdleTimeMs = info.mControllerIdleTimeMs;
 
                     Slog.v(TAG, "WiFi energy data was reset, new WiFi energy data is " + result);
-                }
-
-                // There is some accuracy error in reports so allow some slop in the results.
-                final long SAMPLE_ERROR_MILLIS = 750;
-                final long totalTimeMs = result.mControllerIdleTimeMs + result.mControllerRxTimeMs +
-                        result.mControllerTxTimeMs;
-                if (totalTimeMs > timePeriodMs + SAMPLE_ERROR_MILLIS) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("Total time ");
-                    TimeUtils.formatDuration(totalTimeMs, sb);
-                    sb.append(" is longer than sample period ");
-                    TimeUtils.formatDuration(timePeriodMs, sb);
-                    sb.append(".\n");
-                    sb.append("Previous WiFi snapshot: ").append("idle=");
-                    TimeUtils.formatDuration(lastIdleMs, sb);
-                    sb.append(" rx=");
-                    TimeUtils.formatDuration(lastRxMs, sb);
-                    sb.append(" tx=");
-                    TimeUtils.formatDuration(lastTxMs, sb);
-                    sb.append(" e=").append(lastEnergy);
-                    sb.append("\n");
-                    sb.append("Current WiFi snapshot: ").append("idle=");
-                    TimeUtils.formatDuration(info.mControllerIdleTimeMs, sb);
-                    sb.append(" rx=");
-                    TimeUtils.formatDuration(info.mControllerRxTimeMs, sb);
-                    sb.append(" tx=");
-                    TimeUtils.formatDuration(info.mControllerTxTimeMs, sb);
-                    sb.append(" e=").append(info.mControllerEnergyUsed);
-                    Slog.wtf(TAG, sb.toString());
                 }
 
                 mLastInfo = info;
