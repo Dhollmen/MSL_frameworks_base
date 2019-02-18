@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-#define LOG_NDEBUG 0
+// #define LOG_NDEBUG 0
 #define LOG_TAG "BootAnimation"
 
 #include <stdint.h>
@@ -199,7 +199,7 @@ sp<SurfaceComposerClient> BootAnimation::session() const {
 void BootAnimation::binderDied(const wp<IBinder>&)
 {
     // woah, surfaceflinger died!
-    ALOGD("SurfaceFlinger died, exiting...");
+    // ALOGD("SurfaceFlinger died, exiting...");
 
     // calling requestExit() is not enough here because the Surface code
     // might be blocked on a condition variable that will never be updated.
@@ -774,7 +774,7 @@ bool BootAnimation::movie()
         glGetIntegerv(GL_MAX_TEXTURE_SIZE, &mMaxTextureSize);
         //ALOGD("freemem:%ld, %d", getFreeMemory(), mMaxTextureSize);
         if(getFreeMemory() < mMaxTextureSize * mMaxTextureSize * fcount / 1024 || noTextureCache) {
-            ALOGD("Use save memory method, maybe small fps in actual.");
+            //ALOGD("Use save memory method, maybe small fps in actual.");
             needSaveMem = true;
             glGenTextures(1, &mTextureid);
             glBindTexture(GL_TEXTURE_2D, mTextureid);
@@ -892,12 +892,12 @@ bool BootAnimation::movie()
 
     property_get("persist.sys.silent", value, "null");
     if (strncmp(value, "1", 1) != 0) {
-       ALOGD("playing boot audio here");
+       //ALOGD("playing boot audio here");
        playBackgroundMusic();
     }
 
     if (isMPlayerPrepared) {
-        ALOGD("waiting for media player to complete.");
+        //ALOGD("waiting for media player to complete.");
         struct timespec timeout;
         clock_gettime(CLOCK_MONOTONIC, &timeout);
         timeout.tv_sec += 5; //timeout after 5s.
@@ -910,7 +910,7 @@ bool BootAnimation::movie()
             }
         }
         pthread_mutex_unlock(&mp_lock);
-        ALOGD("media player is completed.");
+        //ALOGD("media player is completed.");
     }
 
     pthread_cond_destroy(&mp_cond);
