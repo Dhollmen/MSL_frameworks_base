@@ -3223,7 +3223,7 @@ public final class ActivityManagerService extends ActivityManagerNative
         ProcessRecord app;
         if (!isolated) {
             app = getProcessRecordLocked(processName, info.uid, keepIfLarge);
-            checkTime(startTime, "startProcess: after getProcessRecord");
+            //checkTime(startTime, "startProcess: after getProcessRecord");
 
             if ((intentFlags & Intent.FLAG_FROM_BACKGROUND) != 0) {
                 // If we are in the background, then check to see if this process
@@ -3283,36 +3283,36 @@ public final class ActivityManagerService extends ActivityManagerNative
                 if (DEBUG_PROCESSES) Slog.v(TAG_PROCESSES, "App already running: " + app);
                 // If this is a new package in the process, add the package to the list
                 app.addPackage(info.packageName, info.versionCode, mProcessStats);
-                checkTime(startTime, "startProcess: done, added package to proc");
+                //checkTime(startTime, "startProcess: done, added package to proc");
                 return app;
             }
 
             // An application record is attached to a previous process,
             // clean it up now.
             if (DEBUG_PROCESSES || DEBUG_CLEANUP) Slog.v(TAG_PROCESSES, "App died: " + app);
-            checkTime(startTime, "startProcess: bad proc running, killing");
+            //checkTime(startTime, "startProcess: bad proc running, killing");
             killProcessGroup(app.uid, app.pid);
             handleAppDiedLocked(app, true, true);
-            checkTime(startTime, "startProcess: done killing old proc");
+            //checkTime(startTime, "startProcess: done killing old proc");
         }
 
         String hostingNameStr = hostingName != null
                 ? hostingName.flattenToShortString() : null;
 
         if (app == null) {
-            checkTime(startTime, "startProcess: creating new process record");
+            //checkTime(startTime, "startProcess: creating new process record");
             app = newProcessRecordLocked(info, processName, isolated, isolatedUid);
             if (app == null) {
-                Slog.w(TAG, "Failed making new process record for "
-                        + processName + "/" + info.uid + " isolated=" + isolated);
+                //Slog.w(TAG, "Failed making new process record for "
+                //        + processName + "/" + info.uid + " isolated=" + isolated);
                 return null;
             }
             app.crashHandler = crashHandler;
-            checkTime(startTime, "startProcess: done creating new process record");
+            //checkTime(startTime, "startProcess: done creating new process record");
         } else {
             // If this is a new package in the process, add the package to the list
             app.addPackage(info.packageName, info.versionCode, mProcessStats);
-            checkTime(startTime, "startProcess: added package to existing proc");
+            //checkTime(startTime, "startProcess: added package to existing proc");
         }
 
         // If the system is not ready yet, then hold off on starting this
@@ -3325,14 +3325,14 @@ public final class ActivityManagerService extends ActivityManagerNative
             }
             if (DEBUG_PROCESSES) Slog.v(TAG_PROCESSES,
                     "System not ready, putting on hold: " + app);
-            checkTime(startTime, "startProcess: returning with proc on hold");
+            //checkTime(startTime, "startProcess: returning with proc on hold");
             return app;
         }
 
-        checkTime(startTime, "startProcess: stepping in to startProcess");
+        //checkTime(startTime, "startProcess: stepping in to startProcess");
         startProcessLocked(
                 app, hostingType, hostingNameStr, abiOverride, entryPoint, entryPointArgs);
-        checkTime(startTime, "startProcess: done starting proc!");
+        //checkTime(startTime, "startProcess: done starting proc!");
         return (app.pid != 0) ? app : null;
     }
 
@@ -3350,12 +3350,12 @@ public final class ActivityManagerService extends ActivityManagerNative
             String hostingNameStr, String abiOverride, String entryPoint, String[] entryPointArgs) {
         long startTime = SystemClock.elapsedRealtime();
         if (app.pid > 0 && app.pid != MY_PID) {
-            checkTime(startTime, "startProcess: removing from pids map");
+            //checkTime(startTime, "startProcess: removing from pids map");
             synchronized (mPidsSelfLocked) {
                 mPidsSelfLocked.remove(app.pid);
                 mHandler.removeMessages(PROC_START_TIMEOUT_MSG, app);
             }
-            checkTime(startTime, "startProcess: done removing from pids map");
+            //checkTime(startTime, "startProcess: done removing from pids map");
             app.setPid(0);
         }
 
@@ -3363,9 +3363,9 @@ public final class ActivityManagerService extends ActivityManagerNative
                 "startProcessLocked removing on hold: " + app);
         mProcessesOnHold.remove(app);
 
-        checkTime(startTime, "startProcess: starting to update cpu stats");
+        //checkTime(startTime, "startProcess: starting to update cpu stats");
         updateCpuStats();
-        checkTime(startTime, "startProcess: done updating cpu stats");
+        //checkTime(startTime, "startProcess: done updating cpu stats");
 
         try {
             try {
@@ -3383,7 +3383,7 @@ public final class ActivityManagerService extends ActivityManagerNative
             if (!app.isolated) {
                 int[] permGids = null;
                 try {
-                    checkTime(startTime, "startProcess: getting gids from package manager");
+                    //checkTime(startTime, "startProcess: getting gids from package manager");
                     final IPackageManager pm = AppGlobals.getPackageManager();
                     permGids = pm.getPackageGids(app.info.packageName, app.userId);
                     MountServiceInternal mountServiceInternal = LocalServices.getService(
@@ -3407,7 +3407,7 @@ public final class ActivityManagerService extends ActivityManagerNative
                 gids[0] = UserHandle.getSharedAppGid(UserHandle.getAppId(uid));
                 gids[1] = UserHandle.getUserGid(UserHandle.getUserId(uid));
             }
-            checkTime(startTime, "startProcess: building args");
+            //checkTime(startTime, "startProcess: building args");
             if (mFactoryTest != FactoryTest.FACTORY_TEST_OFF) {
                 if (mFactoryTest == FactoryTest.FACTORY_TEST_LOW_LEVEL
                         && mTopComponent != null
@@ -3475,19 +3475,19 @@ public final class ActivityManagerService extends ActivityManagerNative
             if (entryPoint == null) entryPoint = "android.app.ActivityThread";
             //Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, "Start proc: " +
             //        app.processName);
-            checkTime(startTime, "startProcess: asking zygote to start proc");
+            //checkTime(startTime, "startProcess: asking zygote to start proc");
             Process.ProcessStartResult startResult = Process.start(entryPoint,
                     app.processName, uid, uid, gids, debugFlags, mountExternal,
                     app.info.targetSdkVersion, app.info.seinfo, requiredAbi, instructionSet,
                     app.info.dataDir, entryPointArgs);
-            checkTime(startTime, "startProcess: returned from zygote!");
+            //checkTime(startTime, "startProcess: returned from zygote!");
             //Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
 
             if (app.isolated) {
                 mBatteryStatsService.addIsolatedUid(app.uid, app.info.uid);
             }
             mBatteryStatsService.noteProcessStart(app.processName, app.info.uid);
-            checkTime(startTime, "startProcess: done updating battery stats");
+            //checkTime(startTime, "startProcess: done updating battery stats");
 
             EventLog.writeEvent(EventLogTags.AM_PROC_START,
                     UserHandle.getUserId(uid), startResult.pid, uid,
@@ -3498,33 +3498,33 @@ public final class ActivityManagerService extends ActivityManagerNative
                 Watchdog.getInstance().processStarted(app.processName, startResult.pid);
             }
 
-            checkTime(startTime, "startProcess: building log message");
+            //checkTime(startTime, "startProcess: building log message");
             StringBuilder buf = mStringBuilder;
-            buf.setLength(0);
-            buf.append("Start proc ");
-            buf.append(startResult.pid);
-            buf.append(':');
-            buf.append(app.processName);
-            buf.append('/');
-            UserHandle.formatUid(buf, uid);
-            if (!isActivityProcess) {
-                buf.append(" [");
-                buf.append(entryPoint);
-                buf.append("]");
-            }
-            buf.append(" for ");
-            buf.append(hostingType);
-            if (hostingNameStr != null) {
-                buf.append(" ");
-                buf.append(hostingNameStr);
-            }
-            Slog.i(TAG, buf.toString());
+//             buf.setLength(0);
+//             buf.append("Start proc ");
+//             buf.append(startResult.pid);
+//             buf.append(':');
+//             buf.append(app.processName);
+//             buf.append('/');
+//             UserHandle.formatUid(buf, uid);
+//             if (!isActivityProcess) {
+//                 buf.append(" [");
+//                 buf.append(entryPoint);
+//                 buf.append("]");
+//             }
+//             buf.append(" for ");
+//             buf.append(hostingType);
+//             if (hostingNameStr != null) {
+//                 buf.append(" ");
+//                 buf.append(hostingNameStr);
+//             }
+//             Slog.i(TAG, buf.toString());
             app.setPid(startResult.pid);
             app.usingWrapper = startResult.usingWrapper;
             app.removed = false;
             app.killed = false;
             app.killedByAm = false;
-            checkTime(startTime, "startProcess: starting to update pids map");
+            //checkTime(startTime, "startProcess: starting to update pids map");
             ProcessRecord oldApp;
             synchronized (mPidsSelfLocked) {
                 oldApp = mPidsSelfLocked.get(startResult.pid);
@@ -3532,8 +3532,8 @@ public final class ActivityManagerService extends ActivityManagerNative
             // If there is already an app occupying that pid that hasn't been cleaned up
             if (oldApp != null && !app.isolated) {
                 // Clean up anything relating to this pid first
-                Slog.w(TAG, "Reusing pid " + startResult.pid
-                        + " while app is still mapped to it");
+                //Slog.w(TAG, "Reusing pid " + startResult.pid
+                //        + " while app is still mapped to it");
                 cleanUpApplicationRecordLocked(oldApp, false, false, -1,
                         true /*replacingPid*/);
             }
@@ -3546,7 +3546,7 @@ public final class ActivityManagerService extends ActivityManagerNative
                             ? PROC_START_TIMEOUT_WITH_WRAPPER : PROC_START_TIMEOUT);
                 }
             }
-            checkTime(startTime, "startProcess: done updating pids map");
+            //checkTime(startTime, "startProcess: done updating pids map");
         } catch (RuntimeException e) {
             // XXX do better error recovery.
             app.setPid(0);
@@ -9673,13 +9673,13 @@ public final class ActivityManagerService extends ActivityManagerNative
         return false;
     }
 
-    private void checkTime(long startTime, String where) {
-        long now = SystemClock.elapsedRealtime();
-        if ((now-startTime) > 1000) {
-            // If we are taking more than a second, log about it.
-            Slog.w(TAG, "Slow operation: " + (now-startTime) + "ms so far, now at " + where);
-        }
-    }
+//     private void checkTime(long startTime, String where) {
+//         long now = SystemClock.elapsedRealtime();
+//         if ((now-startTime) > 1000) {
+//             // If we are taking more than a second, log about it.
+//             Slog.w(TAG, "Slow operation: " + (now-startTime) + "ms so far, now at " + where);
+//         }
+//     }
 
     private final ContentProviderHolder getContentProviderImpl(IApplicationThread caller,
             String name, IBinder token, boolean stable, int userId) {
@@ -9703,7 +9703,7 @@ public final class ActivityManagerService extends ActivityManagerNative
 
             boolean checkCrossUser = true;
 
-            checkTime(startTime, "getContentProviderImpl: getProviderByName");
+            //checkTime(startTime, "getContentProviderImpl: getProviderByName");
 
             // First check if this content provider has been published...
             cpr = mProviderMap.getProviderByName(name, userId);
@@ -9729,12 +9729,12 @@ public final class ActivityManagerService extends ActivityManagerNative
             if (providerRunning) {
                 cpi = cpr.info;
                 String msg;
-                checkTime(startTime, "getContentProviderImpl: before checkContentProviderPermission");
+                //checkTime(startTime, "getContentProviderImpl: before checkContentProviderPermission");
                 if ((msg = checkContentProviderPermissionLocked(cpi, r, userId, checkCrossUser))
                         != null) {
                     throw new SecurityException(msg);
                 }
-                checkTime(startTime, "getContentProviderImpl: after checkContentProviderPermission");
+                //checkTime(startTime, "getContentProviderImpl: after checkContentProviderPermission");
 
                 if (r != null && cpr.canRunHere(r)) {
                     // This provider has been published or is in the process
@@ -9750,7 +9750,7 @@ public final class ActivityManagerService extends ActivityManagerNative
 
                 final long origId = Binder.clearCallingIdentity();
 
-                checkTime(startTime, "getContentProviderImpl: incProviderCountLocked");
+                //checkTime(startTime, "getContentProviderImpl: incProviderCountLocked");
 
                 boolean importantCaller = false;
                 // In this case the provider instance already exists, so we can
@@ -9763,9 +9763,9 @@ public final class ActivityManagerService extends ActivityManagerNative
                         // back up on the LRU list.  This is good because
                         // content providers are often expensive to start.
                         importantCaller = true;
-                        checkTime(startTime, "getContentProviderImpl: before updateLruProcess");
+                        //checkTime(startTime, "getContentProviderImpl: before updateLruProcess");
                         updateLruProcessLocked(cpr.proc, false, null);
-                        checkTime(startTime, "getContentProviderImpl: after updateLruProcess");
+                        //checkTime(startTime, "getContentProviderImpl: after updateLruProcess");
                     }
                 }
 
@@ -9781,10 +9781,10 @@ public final class ActivityManagerService extends ActivityManagerNative
 
                     boolean success = !cpr.proc.killedByAm;
                     if (success) {
-                        checkTime(startTime, "getContentProviderImpl: before updateOomAdj");
+                        //checkTime(startTime, "getContentProviderImpl: before updateOomAdj");
                         success = updateOomAdjLocked(cpr.proc);
                         maybeUpdateProviderUsageStatsLocked(r, cpr.info.packageName, name);
-                        checkTime(startTime, "getContentProviderImpl: after updateOomAdj");
+                        //checkTime(startTime, "getContentProviderImpl: after updateOomAdj");
                         if (DEBUG_PROVIDER) Slog.i(TAG_PROVIDER, "Adjust success: " + success);
                     }
 
@@ -9815,11 +9815,11 @@ public final class ActivityManagerService extends ActivityManagerNative
             boolean singleton;
             if (!providerRunning) {
                 try {
-                    checkTime(startTime, "getContentProviderImpl: before resolveContentProvider");
+                    //checkTime(startTime, "getContentProviderImpl: before resolveContentProvider");
                     cpi = AppGlobals.getPackageManager().
                         resolveContentProvider(name,
                             STOCK_PM_FLAGS | PackageManager.GET_URI_PERMISSION_PATTERNS, userId);
-                    checkTime(startTime, "getContentProviderImpl: after resolveContentProvider");
+                    //checkTime(startTime, "getContentProviderImpl: after resolveContentProvider");
                 } catch (RemoteException ex) {
                 }
                 if (cpi == null) {
@@ -9836,15 +9836,15 @@ public final class ActivityManagerService extends ActivityManagerNative
                     userId = UserHandle.USER_OWNER;
                 }
                 cpi.applicationInfo = getAppInfoForUser(cpi.applicationInfo, userId);
-                checkTime(startTime, "getContentProviderImpl: got app info for user");
+                //checkTime(startTime, "getContentProviderImpl: got app info for user");
 
                 String msg;
-                checkTime(startTime, "getContentProviderImpl: before checkContentProviderPermission");
+                //checkTime(startTime, "getContentProviderImpl: before checkContentProviderPermission");
                 if ((msg = checkContentProviderPermissionLocked(cpi, r, userId, !singleton))
                         != null) {
                     throw new SecurityException(msg);
                 }
-                checkTime(startTime, "getContentProviderImpl: after checkContentProviderPermission");
+                //checkTime(startTime, "getContentProviderImpl: after checkContentProviderPermission");
 
                 if (!mProcessesReady && !mDidUpdate && !mWaitingUpdate
                         && !cpi.processName.equals("system")) {
@@ -9866,20 +9866,20 @@ public final class ActivityManagerService extends ActivityManagerNative
                 }
 
                 ComponentName comp = new ComponentName(cpi.packageName, cpi.name);
-                checkTime(startTime, "getContentProviderImpl: before getProviderByClass");
+                //checkTime(startTime, "getContentProviderImpl: before getProviderByClass");
                 cpr = mProviderMap.getProviderByClass(comp, userId);
-                checkTime(startTime, "getContentProviderImpl: after getProviderByClass");
+                //checkTime(startTime, "getContentProviderImpl: after getProviderByClass");
                 final boolean firstClass = cpr == null;
                 if (firstClass) {
                     final long ident = Binder.clearCallingIdentity();
                     try {
-                        checkTime(startTime, "getContentProviderImpl: before getApplicationInfo");
+                        //checkTime(startTime, "getContentProviderImpl: before getApplicationInfo");
                         ApplicationInfo ai =
                             AppGlobals.getPackageManager().
                                 getApplicationInfo(
                                         cpi.applicationInfo.packageName,
                                         STOCK_PM_FLAGS, userId);
-                        checkTime(startTime, "getContentProviderImpl: after getApplicationInfo");
+                        //checkTime(startTime, "getContentProviderImpl: after getApplicationInfo");
                         if (ai == null) {
                             Slog.w(TAG, "No package info for content provider "
                                     + cpi.name);
@@ -9894,7 +9894,7 @@ public final class ActivityManagerService extends ActivityManagerNative
                     }
                 }
 
-                checkTime(startTime, "getContentProviderImpl: now have ContentProviderRecord");
+                //checkTime(startTime, "getContentProviderImpl: now have ContentProviderRecord");
 
                 if (r != null && cpr.canRunHere(r)) {
                     // If this is a multiprocess provider, then just return its
@@ -9927,10 +9927,10 @@ public final class ActivityManagerService extends ActivityManagerNative
                     try {
                         // Content provider is now in use, its package can't be stopped.
                         try {
-                            checkTime(startTime, "getContentProviderImpl: before set stopped state");
+                            //checkTime(startTime, "getContentProviderImpl: before set stopped state");
                             AppGlobals.getPackageManager().setPackageStoppedState(
                                     cpr.appInfo.packageName, false, userId);
-                            checkTime(startTime, "getContentProviderImpl: after set stopped state");
+                            //checkTime(startTime, "getContentProviderImpl: after set stopped state");
                         } catch (RemoteException e) {
                         } catch (IllegalArgumentException e) {
                             Slog.w(TAG, "Failed trying to unstop package "
@@ -9938,14 +9938,14 @@ public final class ActivityManagerService extends ActivityManagerNative
                         }
 
                         // Use existing process if already started
-                        checkTime(startTime, "getContentProviderImpl: looking for process record");
+                        //checkTime(startTime, "getContentProviderImpl: looking for process record");
                         ProcessRecord proc = getProcessRecordLocked(
                                 cpi.processName, cpr.appInfo.uid, false);
                         if (proc != null && proc.thread != null) {
                             if (DEBUG_PROVIDER) Slog.d(TAG_PROVIDER,
                                     "Installing in existing process " + proc);
                             if (!proc.pubProviders.containsKey(cpi.name)) {
-                                checkTime(startTime, "getContentProviderImpl: scheduling install");
+                                //checkTime(startTime, "getContentProviderImpl: scheduling install");
                                 proc.pubProviders.put(cpi.name, cpr);
                                 try {
                                     proc.thread.scheduleInstallProvider(cpi);
@@ -9953,12 +9953,12 @@ public final class ActivityManagerService extends ActivityManagerNative
                                 }
                             }
                         } else {
-                            checkTime(startTime, "getContentProviderImpl: before start process");
+                            //checkTime(startTime, "getContentProviderImpl: before start process");
                             proc = startProcessLocked(cpi.processName,
                                     cpr.appInfo, false, 0, "content provider",
                                     new ComponentName(cpi.applicationInfo.packageName,
                                             cpi.name), false, false, false);
-                            checkTime(startTime, "getContentProviderImpl: after start process");
+                            //checkTime(startTime, "getContentProviderImpl: after start process");
                             if (proc == null) {
                                 Slog.w(TAG, "Unable to launch app "
                                         + cpi.applicationInfo.packageName + "/"
@@ -9974,7 +9974,7 @@ public final class ActivityManagerService extends ActivityManagerNative
                     }
                 }
 
-                checkTime(startTime, "getContentProviderImpl: updating data structures");
+                //checkTime(startTime, "getContentProviderImpl: updating data structures");
 
                 // Make sure the provider is published (the same provider class
                 // may be published under multiple names).
@@ -9988,7 +9988,7 @@ public final class ActivityManagerService extends ActivityManagerNative
                     conn.waiting = true;
                 }
             }
-            checkTime(startTime, "getContentProviderImpl: done!");
+            //checkTime(startTime, "getContentProviderImpl: done!");
         }
 
         // Wait for the provider to be published...
