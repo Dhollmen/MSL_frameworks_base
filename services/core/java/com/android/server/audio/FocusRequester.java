@@ -207,7 +207,6 @@ public class FocusRequester {
                 mDeathHandler = null;
             }
         } catch (java.util.NoSuchElementException e) {
-            Log.e(TAG, "FocusRequester.release() hit ", e);
         }
     }
 
@@ -254,8 +253,6 @@ public class FocusRequester {
                         return AudioManager.AUDIOFOCUS_LOSS;
                 }
             default:
-                Log.e(TAG, "focusLossForGainRequest() for invalid focus request "+ gainRequest);
-                        return AudioManager.AUDIOFOCUS_NONE;
         }
     }
 
@@ -283,7 +280,6 @@ public class FocusRequester {
                 mFocusDispatcher.dispatchAudioFocusChange(focusGain, mClientId);
             }
         } catch (android.os.RemoteException e) {
-            Log.e(TAG, "Failure to signal gain of audio focus due to: ", e);
         }
     }
 
@@ -322,7 +318,6 @@ public class FocusRequester {
                 }
             }
         } catch (android.os.RemoteException e) {
-            Log.e(TAG, "Failure to signal loss of audio focus due to:", e);
         }
     }
 

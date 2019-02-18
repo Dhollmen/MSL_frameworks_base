@@ -515,7 +515,6 @@ public class MediaFocusControl implements OnFinished {
         // is the current top of the focus stack abandoning focus? (because of request, not death)
         if (!mFocusStack.empty() && mFocusStack.peek().hasSameClient(clientToRemove))
         {
-            //Log.i(TAG, "   removeFocusStackEntry() removing top of stack");
             FocusRequester fr = mFocusStack.pop();
             fr.release();
             if (notifyFocusFollowers) {
@@ -536,8 +535,6 @@ public class MediaFocusControl implements OnFinished {
             while(stackIterator.hasNext()) {
                 FocusRequester fr = stackIterator.next();
                 if(fr.hasSameClient(clientToRemove)) {
-                    Log.i(TAG, "AudioFocus  removeFocusStackEntry(): removing entry for "
-                            + clientToRemove);
                     stackIterator.remove();
                     fr.release();
                 }
@@ -560,7 +557,6 @@ public class MediaFocusControl implements OnFinished {
         while(stackIterator.hasNext()) {
             FocusRequester fr = stackIterator.next();
             if(fr.hasSameBinder(cb)) {
-                Log.i(TAG, "AudioFocus  removeFocusStackEntry(): removing entry for " + cb);
                 stackIterator.remove();
                 // the client just died, no need to unlink to its death
             }
@@ -636,7 +632,6 @@ public class MediaFocusControl implements OnFinished {
 
         public void binderDied() {
             synchronized(mAudioFocusLock) {
-                Log.w(TAG, "  AudioFocus   audio focus client died");
                 removeFocusStackEntryForClient(mCb);
             }
         }
@@ -766,8 +761,6 @@ public class MediaFocusControl implements OnFinished {
     /** @see AudioManager#requestAudioFocus(AudioManager.OnAudioFocusChangeListener, int, int, int) */
     protected int requestAudioFocus(AudioAttributes aa, int focusChangeHint, IBinder cb,
             IAudioFocusDispatcher fd, String clientId, String callingPackageName, int flags) {
-        Log.i(TAG, " AudioFocus  requestAudioFocus() from " + clientId + " req=" + focusChangeHint +
-                "flags=0x" + Integer.toHexString(flags));
         // we need a valid binder callback for clients
         if (!cb.pingBinder()) {
             Log.e(TAG, " AudioFocus DOA client for requestAudioFocus(), aborting.");
@@ -800,7 +793,6 @@ public class MediaFocusControl implements OnFinished {
                 cb.linkToDeath(afdh, 0);
             } catch (RemoteException e) {
                 // client has already died!
-                Log.w(TAG, "AudioFocus  requestAudioFocus() could not link to "+cb+" binder death");
                 return AudioManager.AUDIOFOCUS_REQUEST_FAILED;
             }
 
@@ -860,7 +852,6 @@ public class MediaFocusControl implements OnFinished {
      * */
     protected int abandonAudioFocus(IAudioFocusDispatcher fl, String clientId, AudioAttributes aa) {
         // AudioAttributes are currently ignored, to be used for zones
-        Log.i(TAG, " AudioFocus  abandonAudioFocus() from " + clientId);
         try {
             // this will take care of notifying the new focus owner if needed
             synchronized(mAudioFocusLock) {
@@ -1105,7 +1096,6 @@ public class MediaFocusControl implements OnFinished {
         boolean isLocked = mKeyguardManager != null && mKeyguardManager.isKeyguardLocked();
         if (!isLocked && pm.isScreenOn()) {
             voiceIntent = new Intent(android.speech.RecognizerIntent.ACTION_WEB_SEARCH);
-            Log.i(TAG, "voice-based interactions: about to use ACTION_WEB_SEARCH");
         } else {
             IDeviceIdleController dic = IDeviceIdleController.Stub.asInterface(
                     ServiceManager.getService(Context.DEVICE_IDLE_CONTROLLER));
@@ -1118,7 +1108,6 @@ public class MediaFocusControl implements OnFinished {
             voiceIntent = new Intent(RecognizerIntent.ACTION_VOICE_SEARCH_HANDS_FREE);
             voiceIntent.putExtra(RecognizerIntent.EXTRA_SECURE,
                     isLocked && mKeyguardManager.isKeyguardSecure());
-            Log.i(TAG, "voice-based interactions: about to use ACTION_VOICE_SEARCH_HANDS_FREE");
         }
         // start the search activity
         if (needWakeLock) {
@@ -1132,7 +1121,6 @@ public class MediaFocusControl implements OnFinished {
                 mContext.startActivityAsUser(voiceIntent, UserHandle.CURRENT);
             }
         } catch (ActivityNotFoundException e) {
-            Log.w(TAG, "No activity for search: " + e);
         } finally {
             Binder.restoreCallingIdentity(identity);
             if (needWakeLock) {
@@ -1444,7 +1432,6 @@ public class MediaFocusControl implements OnFinished {
                 try {
                     se.getRcc().setCurrentClientGenerationId(newClientGeneration);
                 } catch (RemoteException e) {
-                    Log.w(TAG, "Dead client in setNewRcClientGenerationOnClients_syncRcsCurrc()",e);
                     stackIterator.remove();
                     se.unlinkToRcClientDeath();
                 }
@@ -1574,7 +1561,6 @@ public class MediaFocusControl implements OnFinished {
         // this is where we enforce opt-in for information display on the remote controls
         //   with the new AudioManager.registerRemoteControlClient() API
         if (prse.getRcc() == null) {
-            //Log.w(TAG, "Can't update remote control display with null remote control client");
             clearRemoteControlDisplay_syncPrs();
             return;
         }
@@ -1620,7 +1606,6 @@ public class MediaFocusControl implements OnFinished {
      */
     protected void registerMediaButtonIntent(PendingIntent mediaIntent, ComponentName eventReceiver,
             IBinder token) {
-        Log.i(TAG, "  Remote Control   registerMediaButtonIntent() for " + mediaIntent);
 
         synchronized(mPRStack) {
             if (pushMediaButtonReceiver_syncPrs(mediaIntent, eventReceiver, token)) {
@@ -1636,8 +1621,6 @@ public class MediaFocusControl implements OnFinished {
      */
     protected void unregisterMediaButtonIntent(PendingIntent mediaIntent)
     {
-        Log.i(TAG, "  Remote Control   unregisterMediaButtonIntent() for " + mediaIntent);
-
         synchronized(mPRStack) {
             boolean topOfStackWillChange = isCurrentRcController(mediaIntent);
             removeMediaButtonReceiver_syncPrs(mediaIntent);
@@ -1794,7 +1777,6 @@ public class MediaFocusControl implements OnFinished {
                 mRcDisplayBinder.linkToDeath(this, 0);
             } catch (RemoteException e) {
                 // remote control display is DOA, disqualify it
-                Log.w(TAG, "registerRemoteControlDisplay() has a dead client " + mRcDisplayBinder);
                 return false;
             }
             return true;
@@ -1811,7 +1793,6 @@ public class MediaFocusControl implements OnFinished {
 
         public void binderDied() {
             synchronized(mPRStack) {
-                Log.w(TAG, "RemoteControl: display " + mRcDisplay + " died");
                 // remove the display from the list
                 final Iterator<DisplayInfoForServer> displayIterator = mRcDisplays.iterator();
                 while (displayIterator.hasNext()) {

@@ -162,7 +162,6 @@ class PlayerRecord implements DeathRecipient {
         }
 
         public void binderDied() {
-            Log.w(TAG, "  RemoteControlClient died");
             // remote control client died, make sure the displays don't use it anymore
             //  by setting its remote control client to null
             sController.registerRemoteControlClient(mMediaIntent, null/*rcClient*/, null/*ignored*/);
@@ -300,7 +299,6 @@ class PlayerRecord implements DeathRecipient {
                 b.linkToDeath(rcdh, 0);
             } catch (RemoteException e) {
                 // remote control client is DOA, disqualify it
-                Log.w(TAG, "registerRemoteControlClient() has a dead client " + b);
                 mRcClient = null;
             }
             mRcClientDeathHandler = rcdh;
