@@ -253,6 +253,7 @@ public class FocusRequester {
                         return AudioManager.AUDIOFOCUS_LOSS;
                 }
             default:
+                        return AudioManager.AUDIOFOCUS_NONE;
         }
     }
 

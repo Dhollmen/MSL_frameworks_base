@@ -4872,9 +4872,8 @@ public final class ActivityManagerService extends ActivityManagerNative
     final void logAppTooSlow(ProcessRecord app, long startTime, String msg) {
         if (true || IS_USER_BUILD) {
             return;
-        } else {
-            return;
         }
+
         //String tracesPath = SystemProperties.get("dalvik.vm.stack-trace-file", null);
         String tracesPath = null;
         if (tracesPath == null || tracesPath.length() == 0) {
@@ -9365,8 +9364,16 @@ public final class ActivityManagerService extends ActivityManagerNative
 
         String msg;
         if (!cpi.exported) {
+            msg = "Permission Denial: opening provider " + cpi.name
+                    + " from " + (r != null ? r : "(null)") + " (pid=" + callingPid
+                    + ", uid=" + callingUid + ") that is not exported from uid "
+                    + cpi.applicationInfo.uid;
+        } else {
+            msg = "Permission Denial: opening provider " + cpi.name
+                    + " from " + (r != null ? r : "(null)") + " (pid=" + callingPid
+                    + ", uid=" + callingUid + ") requires "
+                    + cpi.readPermission + " or " + cpi.writePermission;
         }
-
         return msg;
     }
 
@@ -12888,7 +12895,7 @@ public final class ActivityManagerService extends ActivityManagerNative
             //        + Binder.getCallingPid()
             //        + ", uid=" + Binder.getCallingUid()
             //        + " without permission "
-                    + android.Manifest.permission.DUMP);
+            //        + android.Manifest.permission.DUMP);
             return;
         }
 

@@ -7481,7 +7481,7 @@ public class PackageManagerService extends IPackageManager.Stub {
                     //if (p.info.group != null && p.group == null) {
                     //    Slog.w(TAG, "Permission " + p.info.name + " from package "
                     //            + p.info.packageName + " in an unknown group " + p.info.group);
-                    }
+                    //}
                 }
 
                 ArrayMap<String, BasePermission> permissionMap =
