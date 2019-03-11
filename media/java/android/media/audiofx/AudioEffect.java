@@ -398,19 +398,19 @@ public class AudioEffect {
                 type.toString(), uuid.toString(), priority, audioSession, id,
                 desc, ActivityThread.currentOpPackageName());
         if (initResult != SUCCESS && initResult != ALREADY_EXISTS) {
-            Log.e(TAG, "Error code " + initResult
-                    + " when initializing AudioEffect.");
+            //Log.e(TAG, "Error code " + initResult
+            //        + " when initializing AudioEffect.");
             switch (initResult) {
             case ERROR_BAD_VALUE:
-                throw (new IllegalArgumentException("Effect type: " + type
-                        + " not supported."));
+              //  throw (new IllegalArgumentException("Effect type: " + type
+              //          + " not supported."));
             case ERROR_INVALID_OPERATION:
-                throw (new UnsupportedOperationException(
-                        "Effect library not loaded"));
+              //  throw (new UnsupportedOperationException(
+              //          "Effect library not loaded"));
             default:
-                throw (new RuntimeException(
-                        "Cannot initialize effect engine for type: " + type
-                                + " Error: " + initResult));
+              //  throw (new RuntimeException(
+              //          "Cannot initialize effect engine for type: " + type
+              //                  + " Error: " + initResult));
             }
         }
         mId = id[0];
@@ -1254,8 +1254,8 @@ public class AudioEffect {
     public void checkState(String methodName) throws IllegalStateException {
         synchronized (mStateLock) {
             if (mState != STATE_INITIALIZED) {
-                throw (new IllegalStateException(methodName
-                        + " called on uninitialized AudioEffect."));
+              //  throw (new IllegalStateException(methodName
+              //          + " called on uninitialized AudioEffect."));
             }
         }
     }
@@ -1267,13 +1267,13 @@ public class AudioEffect {
         if (isError(status)) {
             switch (status) {
             case AudioEffect.ERROR_BAD_VALUE:
-                throw (new IllegalArgumentException(
-                        "AudioEffect: bad parameter value"));
+              //  throw (new IllegalArgumentException(
+              //          "AudioEffect: bad parameter value"));
             case AudioEffect.ERROR_INVALID_OPERATION:
-                throw (new UnsupportedOperationException(
-                        "AudioEffect: invalid parameter operation"));
+              //  throw (new UnsupportedOperationException(
+              //          "AudioEffect: invalid parameter operation"));
             default:
-                throw (new RuntimeException("AudioEffect: set/get parameter error"));
+              //  throw (new RuntimeException("AudioEffect: set/get parameter error"));
             }
         }
     }
