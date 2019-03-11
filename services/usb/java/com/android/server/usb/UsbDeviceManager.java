@@ -550,7 +550,7 @@ public class UsbDeviceManager {
 
                 if (mAccessoryStrings != null) {
                     mCurrentAccessory = new UsbAccessory(mAccessoryStrings);
-                    Slog.d(TAG, "entering USB accessory mode: " + mCurrentAccessory);
+                    //Slog.d(TAG, "entering USB accessory mode: " + mCurrentAccessory);
                     // defer accessoryAttached if system is not ready
                     if (mBootCompleted) {
                         getCurrentSettings().accessoryAttached(mCurrentAccessory);

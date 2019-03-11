@@ -291,8 +291,8 @@ public class UsbService extends IUsbManager.Stub {
         mContext.enforceCallingOrSelfPermission(android.Manifest.permission.MANAGE_USB, null);
 
         if (!isSupportedCurrentFunction(function)) {
-            Slog.w(TAG, "Caller of setCurrentFunction() requested unsupported USB function: "
-                    + function);
+            //Slog.w(TAG, "Caller of setCurrentFunction() requested unsupported USB function: "
+            //        + function);
             function = UsbManager.USB_FUNCTION_NONE;
         }
 

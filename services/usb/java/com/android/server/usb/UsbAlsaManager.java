@@ -270,7 +270,7 @@ public final class UsbAlsaManager {
             synchronized(mAlsaDevices) {
                 if (mAlsaDevices.get(name) == null) {
                     AlsaDevice alsaDevice = new AlsaDevice(type, card, device);
-                    Slog.d(TAG, "Adding ALSA device " + alsaDevice);
+                    //Slog.d(TAG, "Adding ALSA device " + alsaDevice);
                     mAlsaDevices.put(name, alsaDevice);
                     mAlsaDevices.notifyAll();
                 }
@@ -281,9 +281,9 @@ public final class UsbAlsaManager {
     private void alsaFileRemoved(String path) {
         synchronized(mAlsaDevices) {
             AlsaDevice device = mAlsaDevices.remove(path);
-            if (device != null) {
-                Slog.d(TAG, "ALSA device removed: " + device);
-            }
+            //if (device != null) {
+            //    Slog.d(TAG, "ALSA device removed: " + device);
+            //}
         }
     }
 

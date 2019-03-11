@@ -141,7 +141,7 @@ public class UsbHostManager {
 
         synchronized (mLock) {
             if (mDevices.get(deviceName) != null) {
-                Slog.w(TAG, "device already on mDevices list: " + deviceName);
+                //Slog.w(TAG, "device already on mDevices list: " + deviceName);
                 return false;
             }
 
@@ -224,8 +224,8 @@ public class UsbHostManager {
                 Slog.d(TAG, "Added device " + mNewDevice);
                 getCurrentSettings().deviceAttached(mNewDevice);
                 mUsbAlsaManager.usbDeviceAdded(mNewDevice);
-            } else {
-                Slog.e(TAG, "mNewDevice is null in endUsbDeviceAdded");
+            //} else {
+            //    Slog.e(TAG, "mNewDevice is null in endUsbDeviceAdded");
             }
             mNewDevice = null;
             mNewConfigurations = null;
