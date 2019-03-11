@@ -131,7 +131,7 @@ isFileDifferent(const char* filePath, uint32_t fileSize, time_t modifiedTime,
 {
     if (lstat64(filePath, st) < 0) {
         // File is not found or cannot be read.
-        ALOGV("Couldn't stat %s, copying: %s\n", filePath, strerror(errno));
+        //ALOGV("Couldn't stat %s, copying: %s\n", filePath, strerror(errno));
         return true;
     }
 
@@ -145,13 +145,13 @@ isFileDifferent(const char* filePath, uint32_t fileSize, time_t modifiedTime,
 
     // For some reason, bionic doesn't define st_mtime as time_t
     if (time_t(st->st_mtime) != modifiedTime) {
-        ALOGV("mod time doesn't match: %ld vs. %ld\n", st->st_mtime, modifiedTime);
+        //ALOGV("mod time doesn't match: %ld vs. %ld\n", st->st_mtime, modifiedTime);
         return true;
     }
 
     int fd = TEMP_FAILURE_RETRY(open(filePath, O_RDONLY));
     if (fd < 0) {
-        ALOGV("Couldn't open file %s: %s", filePath, strerror(errno));
+        //ALOGV("Couldn't open file %s: %s", filePath, strerror(errno));
         return true;
     }
 
@@ -165,7 +165,7 @@ isFileDifferent(const char* filePath, uint32_t fileSize, time_t modifiedTime,
     }
     close(fd);
 
-    ALOGV("%s: crc = %lx, zipCrc = %" PRIu32 "\n", filePath, crc, zipCrc);
+    //ALOGV("%s: crc = %lx, zipCrc = %" PRIu32 "\n", filePath, crc, zipCrc);
 
     if (crc != static_cast<uLong>(zipCrc)) {
         return true;
@@ -212,21 +212,21 @@ copyFileIfChanged(JNIEnv *env, void* arg, ZipFileRO* zipFile, ZipEntryRO zipEntr
     off64_t offset;
 
     if (!zipFile->getEntryInfo(zipEntry, &method, &uncompLen, NULL, &offset, &when, &crc)) {
-        ALOGD("Couldn't read zip entry info\n");
+        //ALOGD("Couldn't read zip entry info\n");
         return INSTALL_FAILED_INVALID_APK;
     }
 
     if (!extractNativeLibs) {
         // check if library is uncompressed and page-aligned
         if (method != ZipFileRO::kCompressStored) {
-            ALOGD("Library '%s' is compressed - will not be able to open it directly from apk.\n",
-                fileName);
+            //ALOGD("Library '%s' is compressed - will not be able to open it directly from apk.\n",
+            //    fileName);
             return INSTALL_FAILED_INVALID_APK;
         }
 
         if (offset % PAGE_SIZE != 0) {
-            ALOGD("Library '%s' is not page-aligned - will not be able to open it directly from"
-                " apk.\n", fileName);
+            //ALOGD("Library '%s' is not page-aligned - will not be able to open it directly from"
+            //    " apk.\n", fileName);
             return INSTALL_FAILED_INVALID_APK;
         }
 
@@ -240,7 +240,7 @@ copyFileIfChanged(JNIEnv *env, void* arg, ZipFileRO* zipFile, ZipEntryRO zipEntr
     char localFileName[nativeLibPath.size() + fileNameLen + 2];
 
     if (strlcpy(localFileName, nativeLibPath.c_str(), sizeof(localFileName)) != nativeLibPath.size()) {
-        ALOGD("Couldn't allocate local file name for library");
+        //ALOGD("Couldn't allocate local file name for library");
         return INSTALL_FAILED_INTERNAL_ERROR;
     }
 
@@ -248,7 +248,7 @@ copyFileIfChanged(JNIEnv *env, void* arg, ZipFileRO* zipFile, ZipEntryRO zipEntr
 
     if (strlcpy(localFileName + nativeLibPath.size() + 1, fileName, sizeof(localFileName)
                     - nativeLibPath.size() - 1) != fileNameLen) {
-        ALOGD("Couldn't allocate local file name for library");
+        //ALOGD("Couldn't allocate local file name for library");
         return INSTALL_FAILED_INTERNAL_ERROR;
     }
 
@@ -264,7 +264,7 @@ copyFileIfChanged(JNIEnv *env, void* arg, ZipFileRO* zipFile, ZipEntryRO zipEntr
     char localTmpFileName[nativeLibPath.size() + TMP_FILE_PATTERN_LEN + 2];
     if (strlcpy(localTmpFileName, nativeLibPath.c_str(), sizeof(localTmpFileName))
             != nativeLibPath.size()) {
-        ALOGD("Couldn't allocate local file name for library");
+        //ALOGD("Couldn't allocate local file name for library");
         return INSTALL_FAILED_INTERNAL_ERROR;
     }
 
@@ -272,18 +272,18 @@ copyFileIfChanged(JNIEnv *env, void* arg, ZipFileRO* zipFile, ZipEntryRO zipEntr
 
     if (strlcpy(localTmpFileName + nativeLibPath.size(), TMP_FILE_PATTERN,
                     TMP_FILE_PATTERN_LEN - nativeLibPath.size()) != TMP_FILE_PATTERN_LEN) {
-        ALOGI("Couldn't allocate temporary file name for library");
+        //ALOGI("Couldn't allocate temporary file name for library");
         return INSTALL_FAILED_INTERNAL_ERROR;
     }
 
     int fd = mkstemp(localTmpFileName);
     if (fd < 0) {
-        ALOGI("Couldn't open temporary file name: %s: %s\n", localTmpFileName, strerror(errno));
+        //ALOGI("Couldn't open temporary file name: %s: %s\n", localTmpFileName, strerror(errno));
         return INSTALL_FAILED_CONTAINER_ERROR;
     }
 
     if (!zipFile->uncompressEntry(zipEntry, fd)) {
-        ALOGI("Failed uncompressing %s to %s\n", fileName, localTmpFileName);
+        //ALOGI("Failed uncompressing %s to %s\n", fileName, localTmpFileName);
         close(fd);
         unlink(localTmpFileName);
         return INSTALL_FAILED_CONTAINER_ERROR;
@@ -297,7 +297,7 @@ copyFileIfChanged(JNIEnv *env, void* arg, ZipFileRO* zipFile, ZipEntryRO zipEntr
     times[1].tv_sec = modTime;
     times[0].tv_usec = times[1].tv_usec = 0;
     if (utimes(localTmpFileName, times) < 0) {
-        ALOGI("Couldn't change modification time on %s: %s\n", localTmpFileName, strerror(errno));
+        //ALOGI("Couldn't change modification time on %s: %s\n", localTmpFileName, strerror(errno));
         unlink(localTmpFileName);
         return INSTALL_FAILED_CONTAINER_ERROR;
     }
@@ -305,19 +305,19 @@ copyFileIfChanged(JNIEnv *env, void* arg, ZipFileRO* zipFile, ZipEntryRO zipEntr
     // Set the mode to 755
     static const mode_t mode = S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP |  S_IXGRP | S_IROTH | S_IXOTH;
     if (chmod(localTmpFileName, mode) < 0) {
-        ALOGI("Couldn't change permissions on %s: %s\n", localTmpFileName, strerror(errno));
+        //ALOGI("Couldn't change permissions on %s: %s\n", localTmpFileName, strerror(errno));
         unlink(localTmpFileName);
         return INSTALL_FAILED_CONTAINER_ERROR;
     }
 
     // Finally, rename it to the final name.
     if (rename(localTmpFileName, localFileName) < 0) {
-        ALOGI("Couldn't rename %s to %s: %s\n", localTmpFileName, localFileName, strerror(errno));
+        //ALOGI("Couldn't rename %s to %s: %s\n", localTmpFileName, localFileName, strerror(errno));
         unlink(localTmpFileName);
         return INSTALL_FAILED_CONTAINER_ERROR;
     }
 
-    ALOGV("Successfully moved %s to %s\n", localTmpFileName, localFileName);
+    //ALOGV("Successfully moved %s to %s\n", localTmpFileName, localFileName);
 
     return INSTALL_SUCCEEDED;
 }
@@ -444,7 +444,7 @@ iterateOverNativeFiles(JNIEnv *env, jlong apkHandle, jstring javaCpuAbi,
             install_status_t ret = callFunc(env, callArg, zipFile, entry, lastSlash + 1);
 
             if (ret != INSTALL_SUCCEEDED) {
-                ALOGV("Failure for entry %s", lastSlash + 1);
+                //ALOGV("Failure for entry %s", lastSlash + 1);
                 return ret;
             }
         }
@@ -524,8 +524,8 @@ static int findSupportedAbi(JNIEnv *env, jlong apkHandle, jobjectArray supported
 
         if (rc == LIB_INITED_AND_SUCCESS) {
             asset_status = GetAssetsStatusFunc(zipFile, supportedAbis, numAbis);
-        } else {
-            ALOGE("Failed to load assets verifier: %d", rc);
+//         } else {
+//             ALOGE("Failed to load assets verifier: %d", rc);
         }
         if(asset_status >= 0) {
             // Override the ABI only if
