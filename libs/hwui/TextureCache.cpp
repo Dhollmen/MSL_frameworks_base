@@ -133,8 +133,8 @@ void TextureCache::resetMarkInUse(void* ownerToken) {
 
 bool TextureCache::canMakeTextureFromBitmap(const SkBitmap* bitmap) {
     if (bitmap->width() > mMaxTextureSize || bitmap->height() > mMaxTextureSize) {
-        ALOGW("Bitmap too large to be uploaded into a texture (%dx%d, max=%dx%d)",
-                bitmap->width(), bitmap->height(), mMaxTextureSize, mMaxTextureSize);
+        //ALOGW("Bitmap too large to be uploaded into a texture (%dx%d, max=%dx%d)",
+        //        bitmap->width(), bitmap->height(), mMaxTextureSize, mMaxTextureSize);
         return false;
     }
     return true;
@@ -306,7 +306,7 @@ void TextureCache::generateTexture(const SkBitmap* bitmap, Texture* texture, boo
         texture->blend = !bitmap->isOpaque();
         break;
     default:
-        ALOGW("Unsupported bitmap colorType: %d", bitmap->colorType());
+        //ALOGW("Unsupported bitmap colorType: %d", bitmap->colorType());
         break;
     }
 

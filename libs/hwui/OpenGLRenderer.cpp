@@ -783,7 +783,7 @@ bool OpenGLRenderer::createFboLayer(Layer* layer, Rect& bounds, Rect& clip) {
  */
 void OpenGLRenderer::composeLayer(const Snapshot& removed, const Snapshot& restored) {
     if (!removed.layer) {
-        ALOGE("Attempting to compose a layer that does not exist");
+        //ALOGE("Attempting to compose a layer that does not exist");
         return;
     }
 

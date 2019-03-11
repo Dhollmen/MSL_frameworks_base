@@ -187,8 +187,8 @@ int RenderThread::displayEventReceiverCallback(int fd, int events, void* data) {
     }
 
     if (!(events & Looper::EVENT_INPUT)) {
-        ALOGW("Received spurious callback for unhandled poll event.  "
-                "events=0x%x", events);
+        //ALOGW("Received spurious callback for unhandled poll event.  "
+        //        "events=0x%x", events);
         return 1; // keep the callback
     }
 
@@ -212,7 +212,7 @@ static nsecs_t latestVsyncEvent(DisplayEventReceiver* receiver) {
         }
     }
     if (n < 0) {
-        ALOGW("Failed to get events from display event receiver, status=%d", status_t(n));
+        //ALOGW("Failed to get events from display event receiver, status=%d", status_t(n));
     }
     return latest;
 }

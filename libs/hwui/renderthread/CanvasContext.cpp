@@ -245,8 +245,8 @@ void CanvasContext::draw() {
         dirty.setEmpty();
     } else {
         if (!dirty.isEmpty() && !dirty.intersect(0, 0, width, height)) {
-            ALOGW("Dirty " RECT_STRING " doesn't intersect with 0 0 %d %d ?",
-                    SK_RECT_ARGS(dirty), width, height);
+            //ALOGW("Dirty " RECT_STRING " doesn't intersect with 0 0 %d %d ?",
+            //        SK_RECT_ARGS(dirty), width, height);
             dirty.setEmpty();
         }
         profiler().unionDirty(&dirty);
@@ -318,7 +318,7 @@ void CanvasContext::markLayerInUse(RenderNode* node) {
 }
 
 static void destroyPrefetechedNode(RenderNode* node) {
-    ALOGW("Incorrectly called buildLayer on View: %s, destroying layer...", node->getName());
+    //ALOGW("Incorrectly called buildLayer on View: %s, destroying layer...", node->getName());
     node->destroyHardwareResources();
     node->decStrong(nullptr);
 }
