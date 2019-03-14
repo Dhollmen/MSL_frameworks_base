@@ -572,12 +572,12 @@ public class PathParser {
             /* Solve for intersecting unit circles */
             double dsq = dx * dx + dy * dy;
             if (dsq == 0.0) {
-                Log.w(LOGTAG, " Points are coincident");
+                //Log.w(LOGTAG, " Points are coincident");
                 return; /* Points are coincident */
             }
             double disc = 1.0 / dsq - 1.0 / 4.0;
             if (disc < 0.0) {
-                Log.w(LOGTAG, "Points are too far apart " + dsq);
+                //Log.w(LOGTAG, "Points are too far apart " + dsq);
                 float adjust = (float) (Math.sqrt(dsq) / 1.99999);
                 drawArc(p, x0, y0, x1, y1, a * adjust,
                         b * adjust, theta, isMoreThanHalf, isPositiveArc);
