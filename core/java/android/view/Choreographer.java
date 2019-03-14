@@ -564,10 +564,10 @@ public final class Choreographer {
             final long jitterNanos = startNanos - frameTimeNanos;
             if (jitterNanos >= mFrameIntervalNanos) {
                 final long skippedFrames = jitterNanos / mFrameIntervalNanos;
-                if (skippedFrames >= SKIPPED_FRAME_WARNING_LIMIT) {
-                    Log.i(TAG, "Skipped " + skippedFrames + " frames!  "
-                            + "The application may be doing too much work on its main thread.");
-                }
+//                 if (skippedFrames >= SKIPPED_FRAME_WARNING_LIMIT) {
+//                     Log.i(TAG, "Skipped " + skippedFrames + " frames!  "
+//                             + "The application may be doing too much work on its main thread.");
+//                 }
                 final long lastFrameOffset = jitterNanos % mFrameIntervalNanos;
                 if (DEBUG_JANK) {
                     Log.d(TAG, "Missed vsync by " + (jitterNanos * 0.000001f) + " ms "
@@ -803,10 +803,10 @@ public final class Choreographer {
             // but that could change in the future so let's log a message to help us remember
             // that we need to fix this.
             if (builtInDisplayId != SurfaceControl.BUILT_IN_DISPLAY_ID_MAIN) {
-                Log.d(TAG, "Received vsync from secondary display, but we don't support "
-                        + "this case yet.  Choreographer needs a way to explicitly request "
-                        + "vsync for a specific display to ensure it doesn't lose track "
-                        + "of its scheduled vsync.");
+//                 Log.d(TAG, "Received vsync from secondary display, but we don't support "
+//                         + "this case yet.  Choreographer needs a way to explicitly request "
+//                         + "vsync for a specific display to ensure it doesn't lose track "
+//                         + "of its scheduled vsync.");
                 scheduleVsync();
                 return;
             }
@@ -818,15 +818,15 @@ public final class Choreographer {
             // Otherwise, messages that predate the vsync event will be handled first.
             long now = System.nanoTime();
             if (timestampNanos > now) {
-                Log.w(TAG, "Frame time is " + ((timestampNanos - now) * 0.000001f)
-                        + " ms in the future!  Check that graphics HAL is generating vsync "
-                        + "timestamps using the correct timebase.");
+//                 Log.w(TAG, "Frame time is " + ((timestampNanos - now) * 0.000001f)
+//                         + " ms in the future!  Check that graphics HAL is generating vsync "
+//                         + "timestamps using the correct timebase.");
                 timestampNanos = now;
             }
 
             if (mHavePendingVsync) {
-                Log.w(TAG, "Already have a pending vsync event.  There should only be "
-                        + "one at a time.");
+//                 Log.w(TAG, "Already have a pending vsync event.  There should only be "
+//                         + "one at a time.");
             } else {
                 mHavePendingVsync = true;
             }
