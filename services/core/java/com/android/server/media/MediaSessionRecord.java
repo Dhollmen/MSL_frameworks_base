@@ -256,7 +256,7 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             if (direction == AudioManager.ADJUST_TOGGLE_MUTE
                     || direction == AudioManager.ADJUST_MUTE
                     || direction == AudioManager.ADJUST_UNMUTE) {
-                Log.w(TAG, "Muting remote playback is not supported");
+                //Log.w(TAG, "Muting remote playback is not supported");
                 return;
             }
             mSessionCb.adjustVolume(direction);
@@ -494,9 +494,9 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
                     cb.onPlaybackStateChanged(mPlaybackState);
                 } catch (DeadObjectException e) {
                     mControllerCallbacks.remove(i);
-                    Log.w(TAG, "Removed dead callback in pushPlaybackStateUpdate.", e);
+                    //Log.w(TAG, "Removed dead callback in pushPlaybackStateUpdate.", e);
                 } catch (RemoteException e) {
-                    Log.w(TAG, "unexpected exception in pushPlaybackStateUpdate.", e);
+                    //Log.w(TAG, "unexpected exception in pushPlaybackStateUpdate.", e);
                 }
             }
         }
@@ -512,10 +512,10 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
                 try {
                     cb.onMetadataChanged(mMetadata);
                 } catch (DeadObjectException e) {
-                    Log.w(TAG, "Removing dead callback in pushMetadataUpdate. ", e);
+                    //Log.w(TAG, "Removing dead callback in pushMetadataUpdate. ", e);
                     mControllerCallbacks.remove(i);
                 } catch (RemoteException e) {
-                    Log.w(TAG, "unexpected exception in pushMetadataUpdate. ", e);
+                    //Log.w(TAG, "unexpected exception in pushMetadataUpdate. ", e);
                 }
             }
         }
@@ -529,13 +529,13 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             for (int i = mControllerCallbacks.size() - 1; i >= 0; i--) {
                 ISessionControllerCallback cb = mControllerCallbacks.get(i);
                 try {
-                    Log.d(TAG, "pushBrowsePlayerInfo");
+                    //Log.d(TAG, "pushBrowsePlayerInfo");
                     cb.onUpdateFolderInfoBrowsedPlayer(mBrowsedPlayerURI);
                 } catch (DeadObjectException e) {
-                    Log.w(TAG, "Removing dead callback in pushBrowsePlayerInfo. ", e);
+                    //Log.w(TAG, "Removing dead callback in pushBrowsePlayerInfo. ", e);
                     mControllerCallbacks.remove(i);
                 } catch (RemoteException e) {
-                    Log.w(TAG, "unexpected exception in pushBrowsePlayerInfo. ", e);
+                    //Log.w(TAG, "unexpected exception in pushBrowsePlayerInfo. ", e);
                 }
             }
         }
@@ -549,13 +549,13 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             for (int i = mControllerCallbacks.size() - 1; i >= 0; i--) {
                 ISessionControllerCallback cb = mControllerCallbacks.get(i);
                 try {
-                    Log.d(TAG, "pushNowPlayingEntries");
+                    //Log.d(TAG, "pushNowPlayingEntries");
                     cb.onUpdateNowPlayingEntries(mNowPlayingList);
                 } catch (DeadObjectException e) {
-                    Log.w(TAG, "Removing dead callback in pushNowPlayingEntries. ", e);
+                    //Log.w(TAG, "Removing dead callback in pushNowPlayingEntries. ", e);
                     mControllerCallbacks.remove(i);
                 } catch (RemoteException e) {
-                    Log.w(TAG, "unexpected exception in pushNowPlayingEntries. ", e);
+                    //Log.w(TAG, "unexpected exception in pushNowPlayingEntries. ", e);
                 }
             }
         }
@@ -569,13 +569,13 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             for (int i = mControllerCallbacks.size() - 1; i >= 0; i--) {
                 ISessionControllerCallback cb = mControllerCallbacks.get(i);
                 try {
-                    Log.d(TAG, "pushNowPlayingContentChange");
+                    //Log.d(TAG, "pushNowPlayingContentChange");
                     cb.onUpdateNowPlayingContentChange();
                 } catch (DeadObjectException e) {
-                    Log.w(TAG, "Removing dead callback in pushNowPlayingContentChange. ", e);
+                    //Log.w(TAG, "Removing dead callback in pushNowPlayingContentChange. ", e);
                     mControllerCallbacks.remove(i);
                 } catch (RemoteException e) {
-                    Log.w(TAG, "unexpected exception in pushNowPlayingContentChange. ", e);
+                    //Log.w(TAG, "unexpected exception in pushNowPlayingContentChange. ", e);
                 }
             }
         }
@@ -589,13 +589,13 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             for (int i = mControllerCallbacks.size() - 1; i >= 0; i--) {
                 ISessionControllerCallback cb = mControllerCallbacks.get(i);
                 try {
-                    Log.d(TAG, "pushPlayItemResponse");
+                    //Log.d(TAG, "pushPlayItemResponse");
                     cb.onPlayItemResponse(mPlayItemStatus);
                 } catch (DeadObjectException e) {
-                    Log.w(TAG, "Removing dead callback in pushPlayItemResponse. ", e);
+                    //Log.w(TAG, "Removing dead callback in pushPlayItemResponse. ", e);
                     mControllerCallbacks.remove(i);
                 } catch (RemoteException e) {
-                    Log.w(TAG, "unexpected exception in pushPlayItemResponse. ", e);
+                    //Log.w(TAG, "unexpected exception in pushPlayItemResponse. ", e);
                 }
             }
         }
@@ -612,9 +612,9 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
                     cb.onQueueChanged(mQueue);
                 } catch (DeadObjectException e) {
                     mControllerCallbacks.remove(i);
-                    Log.w(TAG, "Removed dead callback in pushQueueUpdate.", e);
+                    //Log.w(TAG, "Removed dead callback in pushQueueUpdate.", e);
                 } catch (RemoteException e) {
-                    Log.w(TAG, "unexpected exception in pushQueueUpdate.", e);
+                    //Log.w(TAG, "unexpected exception in pushQueueUpdate.", e);
                 }
             }
         }
@@ -631,9 +631,9 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
                     cb.onQueueTitleChanged(mQueueTitle);
                 } catch (DeadObjectException e) {
                     mControllerCallbacks.remove(i);
-                    Log.w(TAG, "Removed dead callback in pushQueueTitleUpdate.", e);
+                    //Log.w(TAG, "Removed dead callback in pushQueueTitleUpdate.", e);
                 } catch (RemoteException e) {
-                    Log.w(TAG, "unexpected exception in pushQueueTitleUpdate.", e);
+                    //Log.w(TAG, "unexpected exception in pushQueueTitleUpdate.", e);
                 }
             }
         }
@@ -650,9 +650,9 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
                     cb.onExtrasChanged(mExtras);
                 } catch (DeadObjectException e) {
                     mControllerCallbacks.remove(i);
-                    Log.w(TAG, "Removed dead callback in pushExtrasUpdate.", e);
+                    //Log.w(TAG, "Removed dead callback in pushExtrasUpdate.", e);
                 } catch (RemoteException e) {
-                    Log.w(TAG, "unexpected exception in pushExtrasUpdate.", e);
+                    //Log.w(TAG, "unexpected exception in pushExtrasUpdate.", e);
                 }
             }
         }
@@ -669,9 +669,9 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
                 try {
                     cb.onVolumeInfoChanged(info);
                 } catch (DeadObjectException e) {
-                    Log.w(TAG, "Removing dead callback in pushVolumeUpdate. ", e);
+                    //Log.w(TAG, "Removing dead callback in pushVolumeUpdate. ", e);
                 } catch (RemoteException e) {
-                    Log.w(TAG, "Unexpected exception in pushVolumeUpdate. ", e);
+                    //Log.w(TAG, "Unexpected exception in pushVolumeUpdate. ", e);
                 }
             }
         }
@@ -687,10 +687,10 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
                 try {
                     cb.onEvent(event, data);
                 } catch (DeadObjectException e) {
-                    Log.w(TAG, "Removing dead callback in pushEvent.", e);
+                    //Log.w(TAG, "Removing dead callback in pushEvent.", e);
                     mControllerCallbacks.remove(i);
                 } catch (RemoteException e) {
-                    Log.w(TAG, "unexpected exception in pushEvent.", e);
+                    //Log.w(TAG, "unexpected exception in pushEvent.", e);
                 }
             }
         }
@@ -708,10 +708,10 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
                 try {
                     cb.onSessionDestroyed();
                 } catch (DeadObjectException e) {
-                    Log.w(TAG, "Removing dead callback in pushEvent.", e);
+                    //Log.w(TAG, "Removing dead callback in pushEvent.", e);
                     mControllerCallbacks.remove(i);
                 } catch (RemoteException e) {
-                    Log.w(TAG, "unexpected exception in pushEvent.", e);
+                    //Log.w(TAG, "unexpected exception in pushEvent.", e);
                 }
             }
             // After notifying clear all listeners
@@ -859,27 +859,27 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
 
         @Override
         public void updateFolderInfoBrowsedPlayer(String stringUri) {
-            Log.d(TAG, "SessionStub: updateFolderInfoBrowsedPlayer");
+            //Log.d(TAG, "SessionStub: updateFolderInfoBrowsedPlayer");
             mBrowsedPlayerURI = stringUri;
             mHandler.post(MessageHandler.MSG_FOLDER_INFO_BROWSED_PLAYER);
         }
 
         @Override
         public void updateNowPlayingEntries(long[] playList) {
-            Log.d(TAG, "SessionStub: updateNowPlayingEntries");
+            //Log.d(TAG, "SessionStub: updateNowPlayingEntries");
             mNowPlayingList = playList;
             mHandler.post(MessageHandler.MSG_UPDATE_NOWPLAYING_ENTRIES);
         }
 
         @Override
         public void updateNowPlayingContentChange() {
-            Log.d(TAG, "SessionStub: updateNowPlayingContentChange");
+            //Log.d(TAG, "SessionStub: updateNowPlayingContentChange");
             mHandler.post(MessageHandler.MSG_UPDATE_NOWPLAYING_CONTENT_CHANGE);
         }
 
         @Override
         public void playItemResponse(boolean success) {
-            Log.d(TAG, "SessionStub: playItemResponse");
+            //Log.d(TAG, "SessionStub: playItemResponse");
             mPlayItemStatus = success;
             mHandler.post(MessageHandler.MSG_PLAY_ITEM_RESPONSE);
         }
@@ -917,8 +917,8 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
                 mVolumeType = PlaybackInfo.PLAYBACK_TYPE_LOCAL;
                 if (attributes != null) {
                     mAudioAttrs = attributes;
-                } else {
-                    Log.e(TAG, "Received null audio attributes, using existing attributes");
+                //} else {
+                //    Log.e(TAG, "Received null audio attributes, using existing attributes");
                 }
             }
             if (typeChanged) {
@@ -957,7 +957,7 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
                 mCb.onMediaButton(mediaButtonIntent, sequenceId, cb);
                 return true;
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in sendMediaRequest.", e);
+                //Slog.e(TAG, "Remote failure in sendMediaRequest.", e);
             }
             return false;
         }
@@ -966,7 +966,7 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             try {
                 mCb.onCommand(command, args, cb);
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in sendCommand.", e);
+                //Slog.e(TAG, "Remote failure in sendCommand.", e);
             }
         }
 
@@ -974,7 +974,7 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             try {
                 mCb.onCustomAction(action, args);
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in sendCustomAction.", e);
+                //Slog.e(TAG, "Remote failure in sendCustomAction.", e);
             }
         }
 
@@ -982,7 +982,7 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             try {
                 mCb.onPlay();
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in play.", e);
+                //Slog.e(TAG, "Remote failure in play.", e);
             }
         }
 
@@ -990,7 +990,7 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             try {
                 mCb.onPlayFromMediaId(mediaId, extras);
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in playUri.", e);
+                //Slog.e(TAG, "Remote failure in playUri.", e);
             }
         }
 
@@ -998,7 +998,7 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             try {
                 mCb.onPlayFromSearch(query, extras);
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in playFromSearch.", e);
+                //Slog.e(TAG, "Remote failure in playFromSearch.", e);
             }
         }
 
@@ -1006,7 +1006,7 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             try {
                 mCb.onPlayFromUri(uri, extras);
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in playFromUri.", e);
+                //Slog.e(TAG, "Remote failure in playFromUri.", e);
             }
         }
 
@@ -1014,7 +1014,7 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             try {
                 mCb.onSkipToTrack(id);
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in skipToTrack", e);
+                //Slog.e(TAG, "Remote failure in skipToTrack", e);
             }
         }
 
@@ -1022,7 +1022,7 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             try {
                 mCb.onPause();
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in pause.", e);
+                //Slog.e(TAG, "Remote failure in pause.", e);
             }
         }
 
@@ -1030,7 +1030,7 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             try {
                 mCb.onStop();
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in stop.", e);
+                //Slog.e(TAG, "Remote failure in stop.", e);
             }
         }
 
@@ -1038,7 +1038,7 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             try {
                 mCb.onNext();
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in next.", e);
+                //Slog.e(TAG, "Remote failure in next.", e);
             }
         }
 
@@ -1046,7 +1046,7 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             try {
                 mCb.onPrevious();
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in previous.", e);
+                //Slog.e(TAG, "Remote failure in previous.", e);
             }
         }
 
@@ -1054,7 +1054,7 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             try {
                 mCb.onFastForward();
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in fastForward.", e);
+                //Slog.e(TAG, "Remote failure in fastForward.", e);
             }
         }
 
@@ -1062,7 +1062,7 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             try {
                 mCb.onRewind();
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in rewind.", e);
+                //Slog.e(TAG, "Remote failure in rewind.", e);
             }
         }
 
@@ -1071,7 +1071,7 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             try {
                 mCb.onSeekTo(pos);
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in seekTo.", e);
+                //Slog.e(TAG, "Remote failure in seekTo.", e);
             }
         }
 
@@ -1079,11 +1079,11 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
          * @hide
          */
         public void setRemoteControlClientBrowsedPlayer() {
-            Slog.d(TAG, "setRemoteControlClientBrowsedPlayer in SessionCb");
+            //Slog.d(TAG, "setRemoteControlClientBrowsedPlayer in SessionCb");
             try {
                 mCb.setRemoteControlClientBrowsedPlayer();
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in setRemoteControlClientBrowsedPlayer.", e);
+                //Slog.e(TAG, "Remote failure in setRemoteControlClientBrowsedPlayer.", e);
             }
         }
 
@@ -1091,11 +1091,11 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
          * @hide
          */
         public void setRemoteControlClientPlayItem(long uid, int scope) throws RemoteException {
-            Slog.d(TAG, "setRemoteControlClientPlayItem in SessionCb");
+            //Slog.d(TAG, "setRemoteControlClientPlayItem in SessionCb");
             try {
                 mCb.setRemoteControlClientPlayItem(uid, scope);
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in setRemoteControlClientPlayItem.", e);
+                //Slog.e(TAG, "Remote failure in setRemoteControlClientPlayItem.", e);
             }
         }
 
@@ -1103,11 +1103,11 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
          * @hide
          */
         public void getRemoteControlClientNowPlayingEntries() throws RemoteException {
-            Slog.d(TAG, "getRemoteControlClientNowPlayingEntries in SessionCb");
+            //Slog.d(TAG, "getRemoteControlClientNowPlayingEntries in SessionCb");
             try {
                 mCb.getRemoteControlClientNowPlayingEntries();
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in getRemoteControlClientNowPlayingEntries.", e);
+                //Slog.e(TAG, "Remote failure in getRemoteControlClientNowPlayingEntries.", e);
             }
         }
 
@@ -1115,7 +1115,7 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             try {
                 mCb.onRate(rating);
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in rate.", e);
+                //Slog.e(TAG, "Remote failure in rate.", e);
             }
         }
 
@@ -1123,7 +1123,7 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             try {
                 mCb.onAdjustVolume(direction);
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in adjustVolume.", e);
+                //Slog.e(TAG, "Remote failure in adjustVolume.", e);
             }
         }
 
@@ -1131,7 +1131,7 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
             try {
                 mCb.onSetVolumeTo(value);
             } catch (RemoteException e) {
-                Slog.e(TAG, "Remote failure in setVolumeTo.", e);
+                //Slog.e(TAG, "Remote failure in setVolumeTo.", e);
             }
         }
     }
@@ -1304,25 +1304,25 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
 
         @Override
         public void seekTo(long pos) throws RemoteException {
-            Log.d(TAG, "seekTo in ControllerStub");
+            //Log.d(TAG, "seekTo in ControllerStub");
             mSessionCb.seekTo(pos);
         }
 
         @Override
         public void setRemoteControlClientBrowsedPlayer() throws RemoteException {
-            Log.d(TAG, "setRemoteControlClientBrowsedPlayer in ControllerStub");
+            //Log.d(TAG, "setRemoteControlClientBrowsedPlayer in ControllerStub");
             mSessionCb.setRemoteControlClientBrowsedPlayer();
         }
 
         @Override
         public void setRemoteControlClientPlayItem(long uid, int scope) throws RemoteException {
-            Log.d(TAG, "setRemoteControlClientPlayItem in ControllerStub");
+            //Log.d(TAG, "setRemoteControlClientPlayItem in ControllerStub");
             mSessionCb.setRemoteControlClientPlayItem(uid, scope);
         }
 
         @Override
         public void getRemoteControlClientNowPlayingEntries() throws RemoteException {
-            Log.d(TAG, "getRemoteControlClientNowPlayingEntries in ControllerStub");
+            //Log.d(TAG, "getRemoteControlClientNowPlayingEntries in ControllerStub");
             mSessionCb.getRemoteControlClientNowPlayingEntries();
         }
 

@@ -64,7 +64,7 @@ import java.util.Objects;
 public final class MediaRouterService extends IMediaRouterService.Stub
         implements Watchdog.Monitor {
     private static final String TAG = "MediaRouterService";
-    private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
+    private static final boolean DEBUG = false; //Log.isLoggable(TAG, Log.DEBUG);
 
     /**
      * Timeout in milliseconds for a selected route to transition from a
@@ -779,7 +779,7 @@ public final class MediaRouterService extends IMediaRouterService.Stub
                 if (routeRecord != null) {
                     unselectGloballySelectedRoute();
 
-                    Slog.i(TAG, "Selected global route:" + routeRecord);
+                    //Slog.i(TAG, "Selected global route:" + routeRecord);
                     mGloballySelectedRouteRecord = routeRecord;
                     checkGloballySelectedRouteState();
                     routeRecord.getProvider().setSelectedDisplay(routeRecord.getDescriptorId());
@@ -799,7 +799,7 @@ public final class MediaRouterService extends IMediaRouterService.Stub
 
         private void unselectGloballySelectedRoute() {
             if (mGloballySelectedRouteRecord != null) {
-                Slog.i(TAG, "Unselected global route:" + mGloballySelectedRouteRecord);
+                //Slog.i(TAG, "Unselected global route:" + mGloballySelectedRouteRecord);
                 mGloballySelectedRouteRecord.getProvider().setSelectedDisplay(null);
                 mGloballySelectedRouteRecord = null;
                 checkGloballySelectedRouteState();
@@ -899,15 +899,15 @@ public final class MediaRouterService extends IMediaRouterService.Stub
             switch (mConnectionPhase) {
                 case PHASE_CONNECTED:
                     if (oldPhase != PHASE_CONNECTED) {
-                        Slog.i(TAG, "Connected to global route: "
-                                + mGloballySelectedRouteRecord);
+                        //Slog.i(TAG, "Connected to global route: "
+                        //        + mGloballySelectedRouteRecord);
                     }
                     updateConnectionTimeout(0);
                     break;
                 case PHASE_CONNECTING:
                     if (oldPhase != PHASE_CONNECTING) {
-                        Slog.i(TAG, "Connecting to global route: "
-                                + mGloballySelectedRouteRecord);
+                        //Slog.i(TAG, "Connecting to global route: "
+                        //        + mGloballySelectedRouteRecord);
                     }
                     updateConnectionTimeout(TIMEOUT_REASON_WAITING_FOR_CONNECTED);
                     break;
@@ -950,29 +950,29 @@ public final class MediaRouterService extends IMediaRouterService.Stub
         private void connectionTimedOut() {
             if (mConnectionTimeoutReason == 0 || mGloballySelectedRouteRecord == null) {
                 // Shouldn't get here.  There must be a bug somewhere.
-                Log.wtf(TAG, "Handled connection timeout for no reason.");
+                //Log.wtf(TAG, "Handled connection timeout for no reason.");
                 return;
             }
 
             switch (mConnectionTimeoutReason) {
                 case TIMEOUT_REASON_NOT_AVAILABLE:
-                    Slog.i(TAG, "Global route no longer available: "
-                            + mGloballySelectedRouteRecord);
+                    //Slog.i(TAG, "Global route no longer available: "
+                    //        + mGloballySelectedRouteRecord);
                     break;
                 case TIMEOUT_REASON_CONNECTION_LOST:
-                    Slog.i(TAG, "Global route connection lost: "
-                            + mGloballySelectedRouteRecord);
+                    //Slog.i(TAG, "Global route connection lost: "
+                    //        + mGloballySelectedRouteRecord);
                     break;
                 case TIMEOUT_REASON_WAITING_FOR_CONNECTING:
-                    Slog.i(TAG, "Global route timed out while waiting for "
-                            + "connection attempt to begin after "
-                            + (SystemClock.uptimeMillis() - mConnectionTimeoutStartTime)
-                            + " ms: " + mGloballySelectedRouteRecord);
+                    //Slog.i(TAG, "Global route timed out while waiting for "
+                    //        + "connection attempt to begin after "
+                    //        + (SystemClock.uptimeMillis() - mConnectionTimeoutStartTime)
+                    //        + " ms: " + mGloballySelectedRouteRecord);
                     break;
                 case TIMEOUT_REASON_WAITING_FOR_CONNECTED:
-                    Slog.i(TAG, "Global route timed out while connecting after "
-                            + (SystemClock.uptimeMillis() - mConnectionTimeoutStartTime)
-                            + " ms: " + mGloballySelectedRouteRecord);
+                    //Slog.i(TAG, "Global route timed out while connecting after "
+                    //        + (SystemClock.uptimeMillis() - mConnectionTimeoutStartTime)
+                    //        + " ms: " + mGloballySelectedRouteRecord);
                     break;
             }
             mConnectionTimeoutReason = 0;
@@ -1122,8 +1122,8 @@ public final class MediaRouterService extends IMediaRouterService.Stub
                                     changed = true;
                                 } else if (sourceIndex < targetIndex) {
                                     // Ignore route with duplicate id.
-                                    Slog.w(TAG, "Ignoring route descriptor with duplicate id: "
-                                            + routeDescriptor);
+                                    //Slog.w(TAG, "Ignoring route descriptor with duplicate id: "
+                                    //        + routeDescriptor);
                                 } else {
                                     // Reorder existing route within the list.
                                     RouteRecord route = mRoutes.get(sourceIndex);
@@ -1131,9 +1131,9 @@ public final class MediaRouterService extends IMediaRouterService.Stub
                                     changed |= route.updateDescriptor(routeDescriptor);
                                 }
                             }
-                        } else {
-                            Slog.w(TAG, "Ignoring invalid descriptor from media route provider: "
-                                    + mProvider.getFlattenedComponentName());
+                        //} else {
+                        //    Slog.w(TAG, "Ignoring invalid descriptor from media route provider: "
+                        //            + mProvider.getFlattenedComponentName());
                         }
                     }
 

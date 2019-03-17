@@ -75,7 +75,7 @@ import java.util.List;
  */
 public class MediaSessionService extends SystemService implements Monitor {
     private static final String TAG = "MediaSessionService";
-    private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
+    private static final boolean DEBUG = false; //Log.isLoggable(TAG, Log.DEBUG);
 
     private static final int WAKELOCK_TIMEOUT = 5000;
 
@@ -135,7 +135,7 @@ public class MediaSessionService extends SystemService implements Monitor {
     public void updateSession(MediaSessionRecord record) {
         synchronized (mLock) {
             if (!mAllSessions.contains(record)) {
-                Log.d(TAG, "Unknown session updated. Ignoring.");
+                //Log.d(TAG, "Unknown session updated. Ignoring.");
                 return;
             }
             mPriorityStack.onSessionStateChange(record);
@@ -153,7 +153,7 @@ public class MediaSessionService extends SystemService implements Monitor {
         try {
             mRvc.remoteVolumeChanged(session.getControllerBinder(), flags);
         } catch (Exception e) {
-            Log.wtf(TAG, "Error sending volume change to system UI.", e);
+            //Log.wtf(TAG, "Error sending volume change to system UI.", e);
         }
     }
 
@@ -161,7 +161,7 @@ public class MediaSessionService extends SystemService implements Monitor {
         boolean updateSessions = false;
         synchronized (mLock) {
             if (!mAllSessions.contains(record)) {
-                Log.d(TAG, "Unknown session changed playback state. Ignoring.");
+                //Log.d(TAG, "Unknown session changed playback state. Ignoring.");
                 return;
             }
             updateSessions = mPriorityStack.onPlaystateChange(record, oldState, newState);
@@ -174,7 +174,7 @@ public class MediaSessionService extends SystemService implements Monitor {
     public void onSessionPlaybackTypeChanged(MediaSessionRecord record) {
         synchronized (mLock) {
             if (!mAllSessions.contains(record)) {
-                Log.d(TAG, "Unknown session changed playback type. Ignoring.");
+                //Log.d(TAG, "Unknown session changed playback type. Ignoring.");
                 return;
             }
             pushRemoteVolumeUpdateLocked(record.getUserId());
@@ -253,8 +253,8 @@ public class MediaSessionService extends SystemService implements Monitor {
                     enforceMediaPermissions(listener.mComponentName, listener.mPid, listener.mUid,
                             listener.mUserId);
                 } catch (SecurityException e) {
-                    Log.i(TAG, "ActiveSessionsListener " + listener.mComponentName
-                            + " is no longer authorized. Disconnecting.");
+                    //Log.i(TAG, "ActiveSessionsListener " + listener.mComponentName
+                    //        + " is no longer authorized. Disconnecting.");
                     mSessionsListeners.remove(i);
                     try {
                         listener.mListener
@@ -483,8 +483,8 @@ public class MediaSessionService extends SystemService implements Monitor {
                     try {
                         record.mListener.onActiveSessionsChanged(tokens);
                     } catch (RemoteException e) {
-                        Log.w(TAG, "Dead ActiveSessionsListener in pushSessionsChanged, removing",
-                                e);
+                        //Log.w(TAG, "Dead ActiveSessionsListener in pushSessionsChanged, removing",
+                        //        e);
                         mSessionsListeners.remove(i);
                     }
                 }
@@ -498,7 +498,7 @@ public class MediaSessionService extends SystemService implements Monitor {
                 MediaSessionRecord record = mPriorityStack.getDefaultRemoteSession(userId);
                 mRvc.updateRemoteController(record == null ? null : record.getControllerBinder());
             } catch (RemoteException e) {
-                Log.wtf(TAG, "Error sending default remote volume to sys ui.", e);
+                //Log.wtf(TAG, "Error sending default remote volume to sys ui.", e);
             }
         }
     }
@@ -695,7 +695,7 @@ public class MediaSessionService extends SystemService implements Monitor {
                 synchronized (mLock) {
                     int index = findIndexOfSessionsListenerLocked(listener);
                     if (index != -1) {
-                        Log.w(TAG, "ActiveSessionsListener is already added, ignoring");
+                        //Log.w(TAG, "ActiveSessionsListener is already added, ignoring");
                         return;
                     }
                     SessionsListenerRecord record = new SessionsListenerRecord(listener,
@@ -703,7 +703,7 @@ public class MediaSessionService extends SystemService implements Monitor {
                     try {
                         listener.asBinder().linkToDeath(record, 0);
                     } catch (RemoteException e) {
-                        Log.e(TAG, "ActiveSessionsListener is dead, ignoring it", e);
+                        //Log.e(TAG, "ActiveSessionsListener is dead, ignoring it", e);
                         return;
                     }
                     mSessionsListeners.add(record);
@@ -742,7 +742,7 @@ public class MediaSessionService extends SystemService implements Monitor {
         @Override
         public void dispatchMediaKeyEvent(KeyEvent keyEvent, boolean needWakeLock) {
             if (keyEvent == null || !KeyEvent.isMediaKey(keyEvent.getKeyCode())) {
-                Log.w(TAG, "Attempted to dispatch null or non-media key event.");
+                //Log.w(TAG, "Attempted to dispatch null or non-media key event.");
                 return;
             }
 
@@ -764,8 +764,8 @@ public class MediaSessionService extends SystemService implements Monitor {
                 if (isGlobalPriorityActive() && uid != Process.SYSTEM_UID) {
                     // Prevent dispatching key event through reflection while the global priority
                     // session is active.
-                    Slog.i(TAG, "Only the system can dispatch media key event "
-                            + "to the global priority session.");
+                    //Slog.i(TAG, "Only the system can dispatch media key event "
+                    //        + "to the global priority session.");
                     return;
                 }
 
@@ -900,7 +900,7 @@ public class MediaSessionService extends SystemService implements Monitor {
                     mAudioService.adjustSuggestedStreamVolume(direction, suggestedStream,
                             flags, packageName, TAG);
                 } catch (RemoteException e) {
-                    Log.e(TAG, "Error adjusting default volume.", e);
+                    //Log.e(TAG, "Error adjusting default volume.", e);
                 }
             } else {
                 session.adjustVolume(direction, flags, getContext().getPackageName(),
@@ -979,8 +979,8 @@ public class MediaSessionService extends SystemService implements Monitor {
                                     new UserHandle(userId));
                         }
                     } catch (CanceledException e) {
-                        Log.i(TAG, "Error sending key event to media button receiver "
-                                + user.mLastMediaButtonReceiver, e);
+                        //Log.i(TAG, "Error sending key event to media button receiver "
+                        //        + user.mLastMediaButtonReceiver, e);
                     }
                 } else {
                     if (DEBUG) {
@@ -1013,12 +1013,12 @@ public class MediaSessionService extends SystemService implements Monitor {
             boolean isLocked = mKeyguardManager != null && mKeyguardManager.isKeyguardLocked();
             if (!isLocked && pm.isScreenOn()) {
                 voiceIntent = new Intent(android.speech.RecognizerIntent.ACTION_WEB_SEARCH);
-                Log.i(TAG, "voice-based interactions: about to use ACTION_WEB_SEARCH");
+                //Log.i(TAG, "voice-based interactions: about to use ACTION_WEB_SEARCH");
             } else {
                 voiceIntent = new Intent(RecognizerIntent.ACTION_VOICE_SEARCH_HANDS_FREE);
                 voiceIntent.putExtra(RecognizerIntent.EXTRA_SECURE,
                         isLocked && mKeyguardManager.isKeyguardSecure());
-                Log.i(TAG, "voice-based interactions: about to use ACTION_VOICE_SEARCH_HANDS_FREE");
+                //Log.i(TAG, "voice-based interactions: about to use ACTION_VOICE_SEARCH_HANDS_FREE");
             }
             // start the search activity
             if (needWakeLock) {
@@ -1031,7 +1031,7 @@ public class MediaSessionService extends SystemService implements Monitor {
                     getContext().startActivityAsUser(voiceIntent, UserHandle.CURRENT);
                 }
             } catch (ActivityNotFoundException e) {
-                Log.w(TAG, "No activity for search: " + e);
+                //Log.w(TAG, "No activity for search: " + e);
             } finally {
                 if (needWakeLock) {
                     mMediaEventWakeLock.release();
