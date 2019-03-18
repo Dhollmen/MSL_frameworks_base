@@ -438,10 +438,9 @@ class UserUsageStatsService {
     }
 
     private void rolloverStats(final long currentTimeMillis, final long deviceUsageTime) {
-        if (DEBUG) {
-            final long startTime = SystemClock.elapsedRealtime();
-            Slog.i(TAG, mLogPrefix + "Rolling over usage stats");
-        }
+        //final long startTime = SystemClock.elapsedRealtime();
+        //Slog.i(TAG, mLogPrefix + "Rolling over usage stats");
+
         // Finish any ongoing events with an END_OF_DAY event. Make a note of which components
         // need a new CONTINUE_PREVIOUS_DAY entry.
         final Configuration previousConfig =
@@ -481,11 +480,9 @@ class UserUsageStatsService {
 
         refreshAppIdleRollingWindow(currentTimeMillis, deviceUsageTime);
 
-        if (DEBUG) {
-            final long totalTime = SystemClock.elapsedRealtime() - startTime;
-            Slog.i(TAG, mLogPrefix + "Rolling over usage stats complete. Took " + totalTime
-                + " milliseconds");
-        }
+        //final long totalTime = SystemClock.elapsedRealtime() - startTime;
+        //Slog.i(TAG, mLogPrefix + "Rolling over usage stats complete. Took " + totalTime
+        //    + " milliseconds");
     }
 
     private void notifyStatsChanged() {
