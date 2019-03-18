@@ -1676,13 +1676,13 @@ public class ConnectivityService extends IConnectivityManager.Stub
         }
 
         if (LinkProperties.isValidMtu(mtu, newLp.hasGlobalIPv6Address()) == false) {
-            loge("Unexpected mtu value: " + mtu + ", " + iface);
+            if (DBG) loge("Unexpected mtu value: " + mtu + ", " + iface);
             return;
         }
 
         // Cannot set MTU without interface name
         if (TextUtils.isEmpty(iface)) {
-            loge("Setting MTU size with null iface.");
+            if (DBG) loge("Setting MTU size with null iface.");
             return;
         }
 
@@ -2021,7 +2021,7 @@ public class ConnectivityService extends IConnectivityManager.Stub
                 case NetworkAgent.EVENT_NETWORK_INFO_CHANGED: {
                     NetworkAgentInfo nai = mNetworkAgentInfos.get(msg.replyTo);
                     if (nai == null) {
-                        loge("EVENT_NETWORK_INFO_CHANGED from unknown NetworkAgent");
+                        if (DBG) loge("EVENT_NETWORK_INFO_CHANGED from unknown NetworkAgent");
                         break;
                     }
                     info = (NetworkInfo) msg.obj;
@@ -2031,7 +2031,7 @@ public class ConnectivityService extends IConnectivityManager.Stub
                 case NetworkAgent.EVENT_NETWORK_SCORE_CHANGED: {
                     NetworkAgentInfo nai = mNetworkAgentInfos.get(msg.replyTo);
                     if (nai == null) {
-                        loge("EVENT_NETWORK_SCORE_CHANGED from unknown NetworkAgent");
+                        if (DBG) loge("EVENT_NETWORK_SCORE_CHANGED from unknown NetworkAgent");
                         break;
                     }
                     Integer score = (Integer) msg.obj;
@@ -2041,7 +2041,7 @@ public class ConnectivityService extends IConnectivityManager.Stub
                 case NetworkAgent.EVENT_UID_RANGES_ADDED: {
                     NetworkAgentInfo nai = mNetworkAgentInfos.get(msg.replyTo);
                     if (nai == null) {
-                        loge("EVENT_UID_RANGES_ADDED from unknown NetworkAgent");
+                        if (DBG) loge("EVENT_UID_RANGES_ADDED from unknown NetworkAgent");
                         break;
                     }
                     try {
@@ -2055,7 +2055,7 @@ public class ConnectivityService extends IConnectivityManager.Stub
                 case NetworkAgent.EVENT_UID_RANGES_REMOVED: {
                     NetworkAgentInfo nai = mNetworkAgentInfos.get(msg.replyTo);
                     if (nai == null) {
-                        loge("EVENT_UID_RANGES_REMOVED from unknown NetworkAgent");
+                        if (DBG) loge("EVENT_UID_RANGES_REMOVED from unknown NetworkAgent");
                         break;
                     }
                     try {
@@ -2069,7 +2069,7 @@ public class ConnectivityService extends IConnectivityManager.Stub
                 case NetworkAgent.EVENT_SET_EXPLICITLY_SELECTED: {
                     NetworkAgentInfo nai = mNetworkAgentInfos.get(msg.replyTo);
                     if (nai == null) {
-                        loge("EVENT_SET_EXPLICITLY_SELECTED from unknown NetworkAgent");
+                        if (DBG) loge("EVENT_SET_EXPLICITLY_SELECTED from unknown NetworkAgent");
                         break;
                     }
                     if (nai.created && !nai.networkMisc.explicitlySelected) {
@@ -2082,7 +2082,7 @@ public class ConnectivityService extends IConnectivityManager.Stub
                 case NetworkAgent.EVENT_PACKET_KEEPALIVE: {
                     NetworkAgentInfo nai = mNetworkAgentInfos.get(msg.replyTo);
                     if (nai == null) {
-                        loge("EVENT_PACKET_KEEPALIVE from unknown NetworkAgent");
+                        if (DBG) loge("EVENT_PACKET_KEEPALIVE from unknown NetworkAgent");
                         break;
                     }
                     mKeepaliveTracker.handleEventPacketKeepalive(nai, msg);
@@ -2135,7 +2135,7 @@ public class ConnectivityService extends IConnectivityManager.Stub
                         setProvNotificationVisibleIntent(false, netId, null, 0, null, null, false);
                     } else {
                         if (nai == null) {
-                            loge("EVENT_PROVISIONING_NOTIFICATION from unknown NetworkMonitor");
+                            if (DBG) loge("EVENT_PROVISIONING_NOTIFICATION from unknown NetworkMonitor");
                             break;
                         }
                         setProvNotificationVisibleIntent(true, netId, NotificationType.SIGN_IN,
@@ -2538,11 +2538,13 @@ public class ConnectivityService extends IConnectivityManager.Stub
                             break;
                         }
                     }
-                    if (msg.what == EVENT_EXPIRE_NET_TRANSITION_WAKELOCK) {
-                        log("Failed to find a new network - expiring NetTransition Wakelock");
-                    } else {
-                        log("NetTransition Wakelock (" + (causedBy == null ? "unknown" : causedBy) +
-                                " cleared because we found a replacement network");
+                    if (DBG) {
+                        if (msg.what == EVENT_EXPIRE_NET_TRANSITION_WAKELOCK) {
+                            log("Failed to find a new network - expiring NetTransition Wakelock");
+                        } else {
+                            log("NetTransition Wakelock (" + (causedBy == null ? "unknown" : causedBy) +
+                                    " cleared because we found a replacement network");
+                        }
                     }
                     break;
                 }
@@ -3050,7 +3052,7 @@ public class ConnectivityService extends IConnectivityManager.Stub
             if (what != null) {
                 mHandler.obtainMessage(what.intValue()).sendToTarget();
             } else {
-                loge("No matching event to send for URI=" + uri);
+                if (DBG) loge("No matching event to send for URI=" + uri);
             }
         }
     }
@@ -3394,7 +3396,7 @@ public class ConnectivityService extends IConnectivityManager.Stub
                         break;
                 }
             } else {
-                Slog.wtf(TAG, "Unknown notification type " + notifyType + "on network type "
+                if (DBG) Slog.wtf(TAG, "Unknown notification type " + notifyType + "on network type "
                         + getNetworkTypeName(networkType));
                 return;
             }
@@ -3420,14 +3422,14 @@ public class ConnectivityService extends IConnectivityManager.Stub
             try {
                 notificationManager.notify(NOTIFICATION_ID, id, notification);
             } catch (NullPointerException npe) {
-                loge("setNotificationVisible: visible notificationManager npe=" + npe);
+                if (DBG) loge("setNotificationVisible: visible notificationManager npe=" + npe);
                 npe.printStackTrace();
             }
         } else {
             try {
                 notificationManager.cancel(NOTIFICATION_ID, id);
             } catch (NullPointerException npe) {
-                loge("setNotificationVisible: cancel notificationManager npe=" + npe);
+                if (DBG) loge("setNotificationVisible: cancel notificationManager npe=" + npe);
                 npe.printStackTrace();
             }
         }
@@ -3511,9 +3513,9 @@ public class ConnectivityService extends IConnectivityManager.Stub
         String url = getProvisioningUrlBaseFromFile();
         if (TextUtils.isEmpty(url)) {
             url = mContext.getResources().getString(R.string.mobile_provisioning_url);
-            log("getMobileProvisioningUrl: mobile_provisioining_url from resource =" + url);
+            if (DBG) log("getMobileProvisioningUrl: mobile_provisioining_url from resource =" + url);
         } else {
-            log("getMobileProvisioningUrl: mobile_provisioning_url from File =" + url);
+            if (DBG) log("getMobileProvisioningUrl: mobile_provisioning_url from File =" + url);
         }
         // populate the iccid, imei and phone number in the provisioning url.
         if (!TextUtils.isEmpty(url)) {
@@ -3561,7 +3563,7 @@ public class ConnectivityService extends IConnectivityManager.Stub
         synchronized(mVpns) {
             Vpn userVpn = mVpns.get(userId);
             if (userVpn != null) {
-                loge("Starting user already has a VPN");
+                if (DBG) loge("Starting user already has a VPN");
                 return;
             }
             userVpn = new Vpn(mHandler.getLooper(), mContext, mNetd, userId);
@@ -3573,7 +3575,7 @@ public class ConnectivityService extends IConnectivityManager.Stub
         synchronized(mVpns) {
             Vpn userVpn = mVpns.get(userId);
             if (userVpn == null) {
-                loge("Stopping user has no VPN");
+                if (DBG) loge("Stopping user has no VPN");
                 return;
             }
             mVpns.delete(userId);
@@ -3663,8 +3665,8 @@ public class ConnectivityService extends IConnectivityManager.Stub
         }
 
         public void binderDied() {
-            log("ConnectivityService NetworkRequestInfo binderDied(" +
-                    request + ", " + mBinder + ")");
+            if (DBG) log("ConnectivityService NetworkRequestInfo binderDied(" +
+                        request + ", " + mBinder + ")");
             releaseNetworkRequest(request);
         }
 

@@ -1400,7 +1400,7 @@ public final class ProcessStats implements Parcelable {
     private int[] readTableFromParcel(Parcel in, String name, String what) {
         final int size = in.readInt();
         if (size < 0) {
-            Slog.w(TAG, "Ignoring existing stats; bad " + what + " table size: " + size);
+            if (DEBUG) Slog.w(TAG, "Ignoring existing stats; bad " + what + " table size: " + size);
             return BAD_TABLE;
         }
         if (size == 0) {
@@ -1412,7 +1412,7 @@ public final class ProcessStats implements Parcelable {
             if (DEBUG_PARCEL) Slog.i(TAG, "Reading in " + name + " table #" + i + ": "
                     + ProcessStats.printLongOffset(table[i]));
             if (!validateLongOffset(table[i])) {
-                Slog.w(TAG, "Ignoring existing stats; bad " + what + " table entry: "
+                if (DEBUG) Slog.w(TAG, "Ignoring existing stats; bad " + what + " table entry: "
                         + ProcessStats.printLongOffset(table[i]));
                 return null;
             }
@@ -1424,7 +1424,7 @@ public final class ProcessStats implements Parcelable {
         for (int i=0; i<num; i++) {
             long val = array[i];
             if (val < 0) {
-                Slog.w(TAG, "Time val negative: " + val);
+                //Slog.w(TAG, "Time val negative: " + val);
                 val = 0;
             }
             if (val <= Integer.MAX_VALUE) {
@@ -2058,7 +2058,7 @@ public final class ProcessStats implements Parcelable {
                             Slog.d(TAG, "GETPROC leaving proc of " + ss);
                         }
                     }
-                } else {
+                } else if (DEBUG) {
                     Slog.w(TAG, "Cloning proc state: no package state " + commonProc.mPackage
                             + "/" + uid + " for proc " + commonProc.mName);
                 }
@@ -3147,7 +3147,7 @@ public final class ProcessStats implements Parcelable {
             if (false) {
                 RuntimeException here = new RuntimeException("here");
                 here.fillInStackTrace();
-                Slog.d(TAG, "incStartedServices: " + this + " service=" + serviceName
+                if (DEBUG) Slog.d(TAG, "incStartedServices: " + this + " service=" + serviceName
                         + " to " + (mNumStartedServices+1), here);
             }
             if (mCommonProcess != this) {
@@ -3163,7 +3163,7 @@ public final class ProcessStats implements Parcelable {
             if (false) {
                 RuntimeException here = new RuntimeException("here");
                 here.fillInStackTrace();
-                Slog.d(TAG, "decActiveServices: " + this + " service=" + serviceName
+                if (DEBUG) Slog.d(TAG, "decActiveServices: " + this + " service=" + serviceName
                         + " to " + (mNumStartedServices-1), here);
             }
             if (mCommonProcess != this) {

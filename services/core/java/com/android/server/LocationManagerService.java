@@ -129,7 +129,7 @@ import java.util.Set;
  */
 public class LocationManagerService extends ILocationManager.Stub {
     private static final String TAG = "LocationManagerService";
-    public static final boolean D = Log.isLoggable(TAG, Log.DEBUG);
+    public static final boolean D = false; //Log.isLoggable(TAG, Log.DEBUG);
 
     private static final String WAKELOCK_KEY = TAG;
 
@@ -504,7 +504,7 @@ public class LocationManagerService extends ILocationManager.Stub {
             mRealProviders.put(LocationManager.NETWORK_PROVIDER, networkProvider);
             mProxyProviders.add(networkProvider);
             addProviderLocked(networkProvider);
-        } else {
+        } else if (D) {
             Slog.w(TAG,  "no network location provider found");
         }
 
@@ -522,7 +522,7 @@ public class LocationManagerService extends ILocationManager.Stub {
             mProxyProviders.add(fusedLocationProvider);
             mEnabledProviders.add(fusedLocationProvider.getName());
             mRealProviders.put(LocationManager.FUSED_PROVIDER, fusedLocationProvider);
-        } else {
+        } else if (D) {
             Slog.e(TAG, "no fused location provider found",
                     new IllegalStateException("Location service needs a fused location provider"));
         }
@@ -533,10 +533,11 @@ public class LocationManagerService extends ILocationManager.Stub {
                 com.android.internal.R.string.config_geocoderProviderPackageName,
                 com.android.internal.R.array.config_locationProviderPackageNames,
                 mLocationHandler);
-        if (mGeocodeProvider == null) {
-            Slog.e(TAG,  "no geocoder provider found");
+        if (D) {
+            if (mGeocodeProvider == null) {
+                Slog.e(TAG,  "no geocoder provider found");
+            }
         }
-
         mGeoFencerPackageName = resources.getString(
                 com.android.internal.R.string.config_geofenceProvider);
         if (mGeoFencerPackageName != null &&
@@ -559,12 +560,14 @@ public class LocationManagerService extends ILocationManager.Stub {
                     com.android.internal.R.bool.config_enableHardwareFlpOverlay,
                     com.android.internal.R.string.config_hardwareFlpPackageName,
                     com.android.internal.R.array.config_locationProviderPackageNames);
-            if (fusedProxy == null) {
-                Slog.e(TAG, "Unable to bind FusedProxy.");
+            if (D) {
+                if (fusedProxy == null) {
+                    Slog.e(TAG, "Unable to bind FusedProxy.");
+                }
             }
         } else {
             flpHardwareProvider = null;
-            Slog.e(TAG, "FLP HAL not supported");
+            if (D) Slog.e(TAG, "FLP HAL not supported");
         }
 
         // bind to geofence provider
@@ -575,16 +578,17 @@ public class LocationManagerService extends ILocationManager.Stub {
                 mLocationHandler,
                 mGpsGeofenceProxy,
                 flpHardwareProvider != null ? flpHardwareProvider.getGeofenceHardware() : null);
-        if (provider == null) {
-            Slog.e(TAG,  "Unable to bind FLP Geofence proxy.");
+        if (D) {
+            if (provider == null) {
+                Slog.e(TAG,  "Unable to bind FLP Geofence proxy.");
+            }
         }
-
         // bind to hardware activity recognition
         boolean activityRecognitionHardwareIsSupported = ActivityRecognitionHardware.isSupported();
         ActivityRecognitionHardware activityRecognitionHardware = null;
         if (activityRecognitionHardwareIsSupported) {
             activityRecognitionHardware = ActivityRecognitionHardware.getInstance(mContext);
-        } else {
+        } else if (D) {
             Slog.e(TAG, "Hardware Activity-Recognition not supported.");
         }
         ActivityRecognitionProxy proxy = ActivityRecognitionProxy.createAndBind(
@@ -595,8 +599,10 @@ public class LocationManagerService extends ILocationManager.Stub {
                 com.android.internal.R.bool.config_enableActivityRecognitionHardwareOverlay,
                 com.android.internal.R.string.config_activityRecognitionHardwarePackageName,
                 com.android.internal.R.array.config_locationProviderPackageNames);
-        if (proxy == null) {
-            Slog.e(TAG, "Unable to bind ActivityRecognitionProxy.");
+        if (D) {
+            if (proxy == null) {
+                Slog.e(TAG, "Unable to bind ActivityRecognitionProxy.");
+            }
         }
 
         mComboNlpPackageName = resources.getString(
@@ -1542,7 +1548,7 @@ public class LocationManagerService extends ILocationManager.Stub {
             try {
                 receiver.getListener().asBinder().linkToDeath(receiver, 0);
             } catch (RemoteException e) {
-                Slog.e(TAG, "linkToDeath failed:", e);
+                if (D) Slog.e(TAG, "linkToDeath failed:", e);
                 return null;
             }
             mReceivers.put(binder, receiver);
@@ -1857,7 +1863,7 @@ public class LocationManagerService extends ILocationManager.Stub {
         int uid = Binder.getCallingUid();
         if (UserHandle.getUserId(uid) != UserHandle.USER_OWNER) {
             // temporary measure until geofences work for secondary users
-            Log.w(TAG, "proximity alerts are currently available only to the primary user");
+            if (D) Log.w(TAG, "proximity alerts are currently available only to the primary user");
             return;
         }
         long identity = Binder.clearCallingIdentity();
@@ -1926,7 +1932,7 @@ public class LocationManagerService extends ILocationManager.Stub {
         try {
             mGpsStatusProvider.addGpsStatusListener(listener);
         } catch (RemoteException e) {
-            Slog.e(TAG, "mGpsStatusProvider.addGpsStatusListener failed", e);
+            if (D) Slog.e(TAG, "mGpsStatusProvider.addGpsStatusListener failed", e);
             return false;
         }
         return true;
@@ -1938,7 +1944,7 @@ public class LocationManagerService extends ILocationManager.Stub {
             try {
                 mGpsStatusProvider.removeGpsStatusListener(listener);
             } catch (Exception e) {
-                Slog.e(TAG, "mGpsStatusProvider.removeGpsStatusListener failed", e);
+                if (D) Slog.e(TAG, "mGpsStatusProvider.removeGpsStatusListener failed", e);
             }
         }
     }
@@ -2039,7 +2045,7 @@ public class LocationManagerService extends ILocationManager.Stub {
         try {
             return mNetInitiatedListener.sendNiResponse(notifId, userResponse);
         } catch (RemoteException e) {
-            Slog.e(TAG, "RemoteException in LocationManagerService.sendNiResponse");
+            if (D) Slog.e(TAG, "RemoteException in LocationManagerService.sendNiResponse");
             return false;
         }
     }
@@ -2172,7 +2178,7 @@ public class LocationManagerService extends ILocationManager.Stub {
         checkCallerIsProvider();
 
         if (!location.isComplete()) {
-            Log.w(TAG, "Dropping incomplete location: " + location);
+            if (D) Log.w(TAG, "Dropping incomplete location: " + location);
             return;
         }
 
@@ -2327,7 +2333,7 @@ public class LocationManagerService extends ILocationManager.Stub {
                         lastLoc.set(notifyLocation);
                     }
                     if (!receiver.callLocationChangedLocked(notifyLocation)) {
-                        Slog.w(TAG, "RemoteException calling onLocationChanged on " + receiver);
+                        if (D) Slog.w(TAG, "RemoteException calling onLocationChanged on " + receiver);
                         receiverDead = true;
                     }
                     r.mRequest.decrementNumUpdates();
@@ -2341,7 +2347,7 @@ public class LocationManagerService extends ILocationManager.Stub {
                 r.mLastStatusBroadcast = newStatusUpdateTime;
                 if (!receiver.callStatusChangedLocked(provider, status, extras)) {
                     receiverDead = true;
-                    Slog.w(TAG, "RemoteException calling onStatusChanged on " + receiver);
+                    if (D) Slog.w(TAG, "RemoteException calling onStatusChanged on " + receiver);
                 }
             }
 
@@ -2436,7 +2442,7 @@ public class LocationManagerService extends ILocationManager.Stub {
                         }
                         // send location to Combo Nlp for screening
                         if (!r.mReceiver.callLocationChangedLocked(location)) {
-                            Slog.w(TAG, "RemoteException calling onLocationChanged on "
+                            if (D) Slog.w(TAG, "RemoteException calling onLocationChanged on "
                                    + r.mReceiver);
                         } else {
                             if (D) {

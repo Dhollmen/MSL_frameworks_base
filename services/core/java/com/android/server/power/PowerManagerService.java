@@ -97,7 +97,7 @@ public final class PowerManagerService extends SystemService
     private static final String TAG = "PowerManagerService";
 
     private static final boolean DEBUG = false;
-    private static final boolean DEBUG_SPEW = DEBUG && true;
+    private static final boolean DEBUG_SPEW = false; //DEBUG && true;
 
     // Message: Sent when a user activity timeout occurs to update the power state.
     private static final int MSG_USER_ACTIVITY_TIMEOUT = 1;
@@ -1207,13 +1207,13 @@ public final class PowerManagerService extends SystemService
         try {
             switch (mWakefulness) {
                 case WAKEFULNESS_ASLEEP:
-                    Slog.i(TAG, "Waking up from sleep (uid " + reasonUid +")...");
+                    if (DEBUG_SPEW) Slog.i(TAG, "Waking up from sleep (uid " + reasonUid +")...");
                     break;
                 case WAKEFULNESS_DREAMING:
-                    Slog.i(TAG, "Waking up from dream (uid " + reasonUid +")...");
+                    if (DEBUG_SPEW) Slog.i(TAG, "Waking up from dream (uid " + reasonUid +")...");
                     break;
                 case WAKEFULNESS_DOZING:
-                    Slog.i(TAG, "Waking up from dozing (uid " + reasonUid +")...");
+                    if (DEBUG_SPEW) Slog.i(TAG, "Waking up from dozing (uid " + reasonUid +")...");
                     break;
             }
 
@@ -1257,26 +1257,26 @@ public final class PowerManagerService extends SystemService
         try {
             switch (reason) {
                 case PowerManager.GO_TO_SLEEP_REASON_DEVICE_ADMIN:
-                    Slog.i(TAG, "Going to sleep due to device administration policy "
+                    if (DEBUG_SPEW) Slog.i(TAG, "Going to sleep due to device administration policy "
                             + "(uid " + uid +")...");
                     break;
                 case PowerManager.GO_TO_SLEEP_REASON_TIMEOUT:
-                    Slog.i(TAG, "Going to sleep due to screen timeout (uid " + uid +")...");
+                    if (DEBUG_SPEW) Slog.i(TAG, "Going to sleep due to screen timeout (uid " + uid +")...");
                     break;
                 case PowerManager.GO_TO_SLEEP_REASON_LID_SWITCH:
-                    Slog.i(TAG, "Going to sleep due to lid switch (uid " + uid +")...");
+                    if (DEBUG_SPEW) Slog.i(TAG, "Going to sleep due to lid switch (uid " + uid +")...");
                     break;
                 case PowerManager.GO_TO_SLEEP_REASON_POWER_BUTTON:
-                    Slog.i(TAG, "Going to sleep due to power button (uid " + uid +")...");
+                    if (DEBUG_SPEW) Slog.i(TAG, "Going to sleep due to power button (uid " + uid +")...");
                     break;
                 case PowerManager.GO_TO_SLEEP_REASON_SLEEP_BUTTON:
-                    Slog.i(TAG, "Going to sleep due to sleep button (uid " + uid +")...");
+                    if (DEBUG_SPEW) Slog.i(TAG, "Going to sleep due to sleep button (uid " + uid +")...");
                     break;
                 case PowerManager.GO_TO_SLEEP_REASON_HDMI:
-                    Slog.i(TAG, "Going to sleep due to HDMI standby (uid " + uid +")...");
+                    if (DEBUG_SPEW) Slog.i(TAG, "Going to sleep due to HDMI standby (uid " + uid +")...");
                     break;
                 default:
-                    Slog.i(TAG, "Going to sleep by application request (uid " + uid +")...");
+                    if (DEBUG_SPEW) Slog.i(TAG, "Going to sleep by application request (uid " + uid +")...");
                     reason = PowerManager.GO_TO_SLEEP_REASON_APPLICATION;
                     break;
             }
@@ -1330,7 +1330,7 @@ public final class PowerManagerService extends SystemService
 
         Trace.traceBegin(Trace.TRACE_TAG_POWER, "nap");
         try {
-            Slog.i(TAG, "Nap time (uid " + uid +")...");
+            if (DEBUG_SPEW) Slog.i(TAG, "Nap time (uid " + uid +")...");
 
             mSandmanSummoned = true;
             setWakefulnessLocked(WAKEFULNESS_DREAMING, 0);
@@ -1354,7 +1354,7 @@ public final class PowerManagerService extends SystemService
 
         Trace.traceBegin(Trace.TRACE_TAG_POWER, "reallyGoToSleep");
         try {
-            Slog.i(TAG, "Sleeping (uid " + uid +")...");
+            if (DEBUG_SPEW) Slog.i(TAG, "Sleeping (uid " + uid +")...");
 
             setWakefulnessLocked(WAKEFULNESS_ASLEEP, PowerManager.GO_TO_SLEEP_REASON_TIMEOUT);
         } finally {
@@ -1412,7 +1412,7 @@ public final class PowerManagerService extends SystemService
             return;
         }
         if (!Thread.holdsLock(mLock)) {
-            Slog.wtf(TAG, "Power manager lock was not held when calling updatePowerStateLocked");
+            if (DEBUG_SPEW) Slog.wtf(TAG, "Power manager lock was not held when calling updatePowerStateLocked");
         }
 
         Trace.traceBegin(Trace.TRACE_TAG_POWER, "updatePowerState");
@@ -1983,10 +1983,12 @@ public final class PowerManagerService extends SystemService
             // Remember the initial battery level when the dream started.
             if (startDreaming && isDreaming) {
                 mBatteryLevelWhenDreamStarted = mBatteryLevel;
-                if (wakefulness == WAKEFULNESS_DOZING) {
-                    Slog.i(TAG, "Dozing...");
-                } else {
-                    Slog.i(TAG, "Dreaming...");
+                if (DEBUG_SPEW) {
+                    if (wakefulness == WAKEFULNESS_DOZING) {
+                        Slog.i(TAG, "Dozing...");
+                    } else {
+                        Slog.i(TAG, "Dreaming...");
+                    }
                 }
             }
 
@@ -2006,7 +2008,8 @@ public final class PowerManagerService extends SystemService
                         // If the user activity timeout expired and the battery appears
                         // to be draining faster than it is charging then stop dreaming
                         // and go to sleep.
-                        Slog.i(TAG, "Stopping dream because the battery appears to "
+                        if (DEBUG_SPEW) 
+                            Slog.i(TAG, "Stopping dream because the battery appears to "
                                 + "be draining faster than it is charging.  "
                                 + "Battery level when dream started: "
                                 + mBatteryLevelWhenDreamStarted + "%.  "
@@ -2670,7 +2673,7 @@ public final class PowerManagerService extends SystemService
                 return;
             }
 
-            Slog.i(TAG, "Brightness boost activated (uid " + uid +")...");
+            if (DEBUG_SPEW) Slog.i(TAG, "Brightness boost activated (uid " + uid +")...");
             mLastScreenBrightnessBoostTime = eventTime;
             if (!mScreenBrightnessBoostInProgress) {
                 mScreenBrightnessBoostInProgress = true;
@@ -2807,7 +2810,7 @@ public final class PowerManagerService extends SystemService
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-        Slog.wtf(TAG, "Unexpected return from lowLevelReboot!");
+        if (DEBUG) Slog.wtf(TAG, "Unexpected return from lowLevelReboot!");
     }
 
     @Override // Watchdog.Monitor implementation
@@ -3058,7 +3061,7 @@ public final class PowerManagerService extends SystemService
                     ((Runnable) msg.obj).run();
                     break;
                 case MSG_SANDMAN_TIMEOUT:
-                    Slog.w(TAG, "Sandman unresponsive, releasing suspend blocker");
+                    if (DEBUG_SPEW) Slog.w(TAG, "Sandman unresponsive, releasing suspend blocker");
                     handleSandman(true);
                     break;
             }
@@ -3189,7 +3192,7 @@ public final class PowerManagerService extends SystemService
         protected void finalize() throws Throwable {
             try {
                 if (mReferenceCount != 0) {
-                    Slog.wtf(TAG, "Suspend blocker \"" + mName
+                    if (DEBUG_SPEW) Slog.wtf(TAG, "Suspend blocker \"" + mName
                             + "\" was finalized without being released!");
                     mReferenceCount = 0;
                     nativeReleaseSuspendBlocker(mName);
@@ -3225,7 +3228,7 @@ public final class PowerManagerService extends SystemService
                     nativeReleaseSuspendBlocker(mName);
                     Trace.asyncTraceEnd(Trace.TRACE_TAG_POWER, mTraceName, 0);
                 } else if (mReferenceCount < 0) {
-                    Slog.wtf(TAG, "Suspend blocker \"" + mName
+                    if (DEBUG_SPEW) Slog.wtf(TAG, "Suspend blocker \"" + mName
                             + "\" was released without being acquired!", new Throwable());
                     mReferenceCount = 0;
                 }
@@ -3387,7 +3390,8 @@ public final class PowerManagerService extends SystemService
                 synchronized (mLock) {
                     if (now >= mLastWarningAboutUserActivityPermission + (5 * 60 * 1000)) {
                         mLastWarningAboutUserActivityPermission = now;
-                        Slog.w(TAG, "Ignoring call to PowerManager.userActivity() because the "
+                        if (DEBUG_SPEW) 
+                            Slog.w(TAG, "Ignoring call to PowerManager.userActivity() because the "
                                 + "caller does not have DEVICE_POWER or USER_ACTIVITY "
                                 + "permission.  Please fix your app!  "
                                 + " pid=" + Binder.getCallingPid()
@@ -3510,7 +3514,7 @@ public final class PowerManagerService extends SystemService
                     public void onSensorChanged(SensorEvent event) {
                         cleanupProximityLocked();
                         if (!mHandler.hasMessages(MSG_WAKE_UP)) {
-                            Slog.w(TAG, "The proximity sensor took too long, wake event already triggered!");
+                            if (DEBUG_SPEW) Slog.w(TAG, "The proximity sensor took too long, wake event already triggered!");
                             return;
                         }
                         mHandler.removeMessages(MSG_WAKE_UP);

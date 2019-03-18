@@ -537,7 +537,7 @@ public final class ActivityManagerService extends ActivityManagerNative
         }
         @Override
         public void run() {
-            Slog.w(TAG, "getAssistContextExtras failed: timeout retrieving from " + activity);
+            //Slog.w(TAG, "getAssistContextExtras failed: timeout retrieving from " + activity);
             synchronized (this) {
                 haveResult = true;
                 notifyAll();
@@ -2514,7 +2514,7 @@ public final class ActivityManagerService extends ActivityManagerNative
 
         mBatteryStatsService.publish(mContext);
         mAppOpsService.publish(mContext);
-        Slog.d("AppOps", "AppOpsService published");
+        //Slog.d("AppOps", "AppOpsService published");
         LocalServices.addService(ActivityManagerInternal.class, new LocalService());
     }
 
@@ -8810,7 +8810,7 @@ public final class ActivityManagerService extends ActivityManagerNative
         try {
             final TaskRecord task = mStackSupervisor.anyTaskForIdLocked(taskId);
             if (task == null) {
-                Slog.d(TAG, "Could not find task for id: "+ taskId);
+                //Slog.d(TAG, "Could not find task for id: "+ taskId);
                 return;
             }
             if (mStackSupervisor.isLockTaskModeViolation(task)) {
@@ -10324,8 +10324,8 @@ public final class ActivityManagerService extends ActivityManagerNative
                 // Ensure we're done with the provider.
                 removeContentProviderExternalUnchecked(name, null, userId);
             }
-        } else {
-            Slog.d(TAG, "Failed to get provider for authority '" + name + "'");
+        //} else {
+        //    Slog.d(TAG, "Failed to get provider for authority '" + name + "'");
         }
         return pfd;
     }
@@ -15514,7 +15514,7 @@ public final class ActivityManagerService extends ActivityManagerNative
      */
     private final boolean cleanUpApplicationRecordLocked(ProcessRecord app,
             boolean restarting, boolean allowRestart, int index, boolean replacingPid) {
-        Slog.d(TAG, "cleanUpApplicationRecord -- " + app.pid);
+        //Slog.d(TAG, "cleanUpApplicationRecord -- " + app.pid);
         if (index >= 0) {
             removeLruProcessLocked(app);
             ProcessList.remove(app.pid);

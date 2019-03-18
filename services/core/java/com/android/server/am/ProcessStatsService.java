@@ -291,8 +291,8 @@ public final class ProcessStatsService extends IProcessStats.Stub {
             stats.read(stream);
             stream.close();
             if (stats.mReadError != null) {
-                Slog.w(TAG, "Ignoring existing stats; " + stats.mReadError);
                 if (DEBUG) {
+                    Slog.w(TAG, "Ignoring existing stats; " + stats.mReadError);                
                     ArrayMap<String, SparseArray<ProcessStats.ProcessState>> procMap
                             = stats.mProcesses.getMap();
                     final int NPROC = procMap.size();

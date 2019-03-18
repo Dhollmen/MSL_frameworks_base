@@ -48,7 +48,7 @@ import java.util.List;
  */
 class UserUsageStatsService {
     private static final String TAG = "UsageStatsService";
-    private static final boolean DEBUG = UsageStatsService.DEBUG;
+    private static final boolean DEBUG = false; //UsageStatsService.DEBUG;
     private static final SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final int sDateFormatFlags =
             DateUtils.FORMAT_SHOW_DATE
@@ -100,7 +100,7 @@ class UserUsageStatsService {
             if (nullCount != mCurrentStats.length) {
                 // This is weird, but we shouldn't fail if something like this
                 // happens.
-                Slog.w(TAG, mLogPrefix + "Some stats have no latest available");
+                if (DEBUG) Slog.w(TAG, mLogPrefix + "Some stats have no latest available");
             } else {
                 // This must be first boot.
             }
@@ -116,7 +116,8 @@ class UserUsageStatsService {
                     mCurrentStats[UsageStatsManager.INTERVAL_DAILY].beginTime);
             mDailyExpiryDate.addDays(1);
             mDailyExpiryDate.truncateToDay();
-            Slog.i(TAG, mLogPrefix + "Rollover scheduled @ " +
+            if (DEBUG)
+                Slog.i(TAG, mLogPrefix + "Rollover scheduled @ " +
                     sDateFormat.format(mDailyExpiryDate.getTimeInMillis()) +
                     "(" + mDailyExpiryDate.getTimeInMillis() + ")");
         }
@@ -424,7 +425,7 @@ class UserUsageStatsService {
 
     void persistActiveStats() {
         if (mStatsChanged) {
-            Slog.i(TAG, mLogPrefix + "Flushing usage stats to disk");
+            if (DEBUG) Slog.i(TAG, mLogPrefix + "Flushing usage stats to disk");
             try {
                 for (int i = 0; i < mCurrentStats.length; i++) {
                     mDatabase.putUsageStats(i, mCurrentStats[i]);
@@ -437,9 +438,10 @@ class UserUsageStatsService {
     }
 
     private void rolloverStats(final long currentTimeMillis, final long deviceUsageTime) {
-        final long startTime = SystemClock.elapsedRealtime();
-        Slog.i(TAG, mLogPrefix + "Rolling over usage stats");
-
+        if (DEBUG) {
+            final long startTime = SystemClock.elapsedRealtime();
+            Slog.i(TAG, mLogPrefix + "Rolling over usage stats");
+        }
         // Finish any ongoing events with an END_OF_DAY event. Make a note of which components
         // need a new CONTINUE_PREVIOUS_DAY entry.
         final Configuration previousConfig =
@@ -479,9 +481,11 @@ class UserUsageStatsService {
 
         refreshAppIdleRollingWindow(currentTimeMillis, deviceUsageTime);
 
-        final long totalTime = SystemClock.elapsedRealtime() - startTime;
-        Slog.i(TAG, mLogPrefix + "Rolling over usage stats complete. Took " + totalTime
+        if (DEBUG) {
+            final long totalTime = SystemClock.elapsedRealtime() - startTime;
+            Slog.i(TAG, mLogPrefix + "Rolling over usage stats complete. Took " + totalTime
                 + " milliseconds");
+        }
     }
 
     private void notifyStatsChanged() {
@@ -543,7 +547,8 @@ class UserUsageStatsService {
         mDailyExpiryDate.setTimeInMillis(currentTimeMillis);
         mDailyExpiryDate.addDays(1);
         mDailyExpiryDate.truncateToDay();
-        Slog.i(TAG, mLogPrefix + "Rollover scheduled @ " +
+        if (DEBUG)
+            Slog.i(TAG, mLogPrefix + "Rollover scheduled @ " +
                 sDateFormat.format(mDailyExpiryDate.getTimeInMillis()) + "(" +
                 tempCal.getTimeInMillis() + ")");
 
