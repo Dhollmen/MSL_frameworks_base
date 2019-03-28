@@ -124,7 +124,7 @@ import java.util.concurrent.CountDownLatch;
 public class NetworkManagementService extends INetworkManagementService.Stub
         implements Watchdog.Monitor {
     private static final String TAG = "NetworkManagement";
-    private static final boolean DBG = Log.isLoggable(TAG, Log.DEBUG);
+    private static final boolean DBG = false; //Log.isLoggable(TAG, Log.DEBUG);
     private static final String NETD_TAG = "NetdConnector";
     private static final String NETD_SOCKET_NAME = "netd";
 
@@ -580,7 +580,7 @@ public class NetworkManagementService extends INetworkManagementService.Stub
             mConnector.execute("strict", "enable");
             mStrictEnabled = true;
         } catch (NativeDaemonConnectorException e) {
-            Log.wtf(TAG, "Failed strict enable", e);
+            //Log.wtf(TAG, "Failed strict enable", e);
         }
 
         // push any existing quota or UID rules

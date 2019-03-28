@@ -172,7 +172,7 @@ final class NativeDaemonConnector implements Runnable, Handler.Callback, Watchdo
             while (true) {
                 int count = inputStream.read(buffer, start, BUFFER_SIZE - start);
                 if (count < 0) {
-                    loge("got " + count + " reading with start = " + start);
+                    //loge("got " + count + " reading with start = " + start);
                     break;
                 }
 
@@ -407,7 +407,7 @@ final class NativeDaemonConnector implements Runnable, Handler.Callback, Watchdo
         final String rawCmd = rawBuilder.toString();
         final String logCmd = logBuilder.toString();
 
-        log("SND -> {" + logCmd + "}");
+        //log("SND -> {" + logCmd + "}");
 
         synchronized (mDaemonLock) {
             if (mOutputStream == null) {
@@ -432,17 +432,18 @@ final class NativeDaemonConnector implements Runnable, Handler.Callback, Watchdo
             events.add(event);
         } while (event.isClassContinue());
 
-        final long endTime = SystemClock.elapsedRealtime();
-        if (endTime - startTime > WARN_EXECUTE_DELAY_MS) {
-            loge("NDC Command {" + logCmd + "} took too long (" + (endTime - startTime) + "ms)");
-        }
-
-        if (event.isClassClientError()) {
-            throw new NativeDaemonArgumentException(logCmd, event);
-        }
-        if (event.isClassServerError()) {
-            throw new NativeDaemonFailureException(logCmd, event);
-        }
+//         final long endTime = SystemClock.elapsedRealtime();
+// 
+//         if (endTime - startTime > WARN_EXECUTE_DELAY_MS) {
+//             loge("NDC Command {" + logCmd + "} took too long (" + (endTime - startTime) + "ms)");
+//         }
+// 
+//         if (event.isClassClientError()) {
+//             throw new NativeDaemonArgumentException(logCmd, event);
+//         }
+//         if (event.isClassServerError()) {
+//             throw new NativeDaemonFailureException(logCmd, event);
+//         }
 
         return events.toArray(new NativeDaemonEvent[events.size()]);
     }
@@ -633,9 +634,9 @@ final class NativeDaemonConnector implements Runnable, Handler.Callback, Watchdo
             try {
                 result = found.responses.poll(timeoutMs, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {}
-            if (result == null) {
-                Slog.e("NativeDaemonConnector.ResponseQueue", "Timeout waiting for response");
-            }
+            //if (result == null) {
+            //    Slog.e("NativeDaemonConnector.ResponseQueue", "Timeout waiting for response");
+            //}
             return result;
         }
 
