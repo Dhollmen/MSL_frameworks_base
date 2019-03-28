@@ -905,7 +905,7 @@ public final class ActivityThread {
                 }
             }
             if (ordered) {
-                Slog.w(TAG, receiver + " is no longer alive");
+                //Slog.w(TAG, receiver + " is no longer alive");
                 ActivityManagerNative.getDefault().finishReceiver(receiver.asBinder(),
                         resultCode, dataStr, extras, true, intent.getFlags());
                 if (remoteException != null) {
@@ -4802,7 +4802,7 @@ public final class ActivityThread {
         } catch (RemoteException ex) {
         }
         if (holder == null) {
-            Slog.e(TAG, "Failed to find provider info for " + auth);
+            //Slog.e(TAG, "Failed to find provider info for " + auth);
             return null;
         }
 
@@ -4883,7 +4883,7 @@ public final class ActivityThread {
 
     public final IContentProvider acquireExistingProvider(
             Context c, String auth, int userId, boolean stable) {
-        synchronized (mProviderMap) {
+            synchronized (mProviderMap) {
             final ProviderKey key = new ProviderKey(auth, userId);
             final ProviderClientRecord pr = mProviderMap.get(key);
             if (pr == null) {
@@ -4895,8 +4895,8 @@ public final class ActivityThread {
             if (!jBinder.isBinderAlive()) {
                 // The hosting process of the provider has died; we can't
                 // use this one.
-                Log.i(TAG, "Acquiring provider " + auth + " for user " + userId
-                        + ": existing object's process dead");
+                //Log.i(TAG, "Acquiring provider " + auth + " for user " + userId
+                //        + ": existing object's process dead");
                 handleUnstableProviderDiedLocked(jBinder, true);
                 return null;
             }
@@ -4992,8 +4992,8 @@ public final class ActivityThread {
                     prc.removePending = true;
                     Message msg = mH.obtainMessage(H.REMOVE_PROVIDER, prc);
                     mH.sendMessage(msg);
-                } else {
-                    Slog.w(TAG, "Duplicate remove pending of provider " + prc.holder.info.name);
+                //} else {
+                //    Slog.w(TAG, "Duplicate remove pending of provider " + prc.holder.info.name);
                 }
             }
             return true;
@@ -5058,7 +5058,7 @@ public final class ActivityThread {
             for (int i=mProviderMap.size()-1; i>=0; i--) {
                 ProviderClientRecord pr = mProviderMap.valueAt(i);
                 if (pr != null && pr.mProvider.asBinder() == provider) {
-                    Slog.i(TAG, "Removing dead content provider:" + pr.mProvider.toString());
+                    //Slog.i(TAG, "Removing dead content provider:" + pr.mProvider.toString());
                     mProviderMap.removeAt(i);
                 }
             }
@@ -5102,10 +5102,7 @@ public final class ActivityThread {
         for (String auth : auths) {
             final ProviderKey key = new ProviderKey(auth, userId);
             final ProviderClientRecord existing = mProviderMap.get(key);
-            if (existing != null) {
-                Slog.w(TAG, "Content provider " + pcr.mHolder.info.name
-                        + " already published as " + auth);
-            } else {
+            if (existing == null) {
                 mProviderMap.put(key, pcr);
             }
         }
@@ -5132,10 +5129,10 @@ public final class ActivityThread {
         ContentProvider localProvider = null;
         IContentProvider provider;
         if (holder == null || holder.provider == null) {
-            if (DEBUG_PROVIDER || noisy) {
-                Slog.d(TAG, "Loading provider " + info.authority + ": "
-                        + info.name);
-            }
+//             if (DEBUG_PROVIDER || noisy) {
+//                 Slog.d(TAG, "Loading provider " + info.authority + ": "
+//                         + info.name);
+//             }
             Context c = null;
             ApplicationInfo ai = info.applicationInfo;
             if (context.getPackageName().equals(ai.packageName)) {
@@ -5152,10 +5149,10 @@ public final class ActivityThread {
                 }
             }
             if (c == null) {
-                Slog.w(TAG, "Unable to get context for package " +
-                      ai.packageName +
-                      " while loading content provider " +
-                      info.name);
+                //Slog.w(TAG, "Unable to get context for package " +
+                //      ai.packageName +
+                //      " while loading content provider " +
+                //      info.name);
                 return null;
             }
             try {
